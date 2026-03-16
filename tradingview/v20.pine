@@ -1,0 +1,67 @@
+//@version=6
+indicator("V20", overlay=true)
+
+minPercentageMove = input.float(20.0, title="Minimum Percentage Move (%)", minval=0.0)
+
+var float sequenceLow = na
+var float sequenceHigh = na
+var int greenCandleCount = 0
+var bool sequenceStarted = false
+
+isGreenCandle = close > open
+
+if (isGreenCandle)
+    if (not sequenceStarted)
+        sequenceLow := low
+        sequenceHigh := high
+        greenCandleCount := 1
+        sequenceStarted := true
+    else
+        if low < sequenceLow
+            sequenceLow := low
+        if high > sequenceHigh
+            sequenceHigh := high
+        greenCandleCount += 1
+else
+    sequenceLow := na
+    sequenceHigh := na
+    greenCandleCount := 0
+    sequenceStarted := false
+
+var float percentageMove = na
+if (sequenceStarted)
+    percentageMove := ((sequenceHigh - sequenceLow) / sequenceLow) * 100
+
+conditionMet = sequenceStarted and (percentageMove >= minPercentageMove)
+
+if (conditionMet)
+    label.new(bar_index, sequenceLow, text="Move " + str.tostring(percentageMove, "##.##") + " %", style=label.style_label_up, color=color.green, textcolor=color.white)
+
+if (conditionMet)
+    sequenceLow := na
+    sequenceHigh := na
+    greenCandleCount := 0
+    sequenceStarted := false
+
+plotshape(series=conditionMet, location=location.belowbar, color=color.green, style=shape.labelup, title="Condition Met")
+
+sma200 = ta.sma(close, 200)
+plot(sma200, title="200-period SMA", color=color.blue, linewidth=1)
+
+var float lifetimeHigh = na
+if (na(lifetimeHigh) or high > lifetimeHigh)
+    lifetimeHigh := high
+
+percentDiff = ((lifetimeHigh - close) / lifetimeHigh) * 100
+
+if (bar_index == last_bar_index)
+    label.new(bar_index, high, text="-" + str.tostring(percentDiff, "#.##") + "%", style=label.style_label_down, color=color.red, textcolor=color.white, yloc=yloc.abovebar)
+
+plot(lifetimeHigh, title="Lifetime High", color=color.green, linewidth=2, style=plot.style_stepline)
+
+week52Period = 260
+high52Week = ta.highest(high, week52Period)
+low52Week = ta.lowest(low, week52Period)
+
+plot(high52Week, title="52-Week High", color=color.orange, linewidth=2, style=plot.style_line)
+plot(low52Week, title="52-Week Low", color=color.purple, linewidth=2, style=plot.style_line)

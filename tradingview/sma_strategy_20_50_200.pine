@@ -1,0 +1,52 @@
+//@version=6
+indicator("SMA Strategy: 20/50/200", overlay=true)
+
+// Calculate SMAs
+sma20 = ta.sma(close, 20)
+sma50 = ta.sma(close, 50)
+sma200 = ta.sma(close, 200)
+
+// Plot SMAs
+plot(sma20, title="20 SMA", color=color.green, linewidth=1)
+plot(sma50, title="50 SMA", color=color.red, linewidth=1)
+plot(sma200, title="200 SMA", color=color.black, linewidth=1)
+
+// Buy condition from the user-provided logic:
+// 200 SMA on top, 50 SMA in middle, 20 SMA below, close below all
+buyCondition = sma200 > sma50 and sma50 > sma20 and sma20 > close
+
+// Sell condition from the user-provided logic:
+// Close above all SMAs with 20 > 50 > 200 below it
+sellCondition = close > sma20 and sma20 > sma50 and sma50 > sma200
+
+plotshape(
+    buyCondition,
+    title="Buy Signal",
+    location=location.belowbar,
+    color=color.green,
+    style=shape.labelup,
+    text="BUY",
+    textcolor=color.white
+)
+
+plotshape(
+    sellCondition,
+    title="Sell Signal",
+    location=location.abovebar,
+    color=color.red,
+    style=shape.labeldown,
+    text="SELL",
+    textcolor=color.white
+)
+
+alertcondition(
+    buyCondition,
+    title="SMA Buy Signal",
+    message='{"ticker":"{{ticker}}","exchange":"{{exchange}}","action":"BUY","strategy":"SMA Strategy: 20/50/200","price":"{{close}}","timeframe":"{{interval}}","timestamp":"{{timenow}}","notes":"Buy signal from SMA alignment"}'
+)
+
+alertcondition(
+    sellCondition,
+    title="SMA Sell Signal",
+    message='{"ticker":"{{ticker}}","exchange":"{{exchange}}","action":"SELL","strategy":"SMA Strategy: 20/50/200","price":"{{close}}","timeframe":"{{interval}}","timestamp":"{{timenow}}","notes":"Sell signal from SMA alignment"}'
+)
