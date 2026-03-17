@@ -1,0 +1,122 @@
+---
+stocks:
+- symbol: LT
+  name: Larsen & Toubro
+  yahooSymbol: LT.NS
+- symbol: RELIANCE
+  name: Reliance Industries
+  yahooSymbol: RELIANCE.NS
+- symbol: SBIN
+  name: State Bank of India
+  yahooSymbol: SBIN.NS
+- symbol: HDFCBANK
+  name: HDFC Bank
+  yahooSymbol: HDFCBANK.NS
+- symbol: ICICIBANK
+  name: ICICI Bank
+  yahooSymbol: ICICIBANK.NS
+- symbol: AXISBANK
+  name: Axis Bank
+  yahooSymbol: AXISBANK.NS
+- symbol: KOTAKBANK
+  name: Kotak Mahindra Bank
+  yahooSymbol: KOTAKBANK.NS
+- symbol: HCLTECH
+  name: HCL Technologies
+  yahooSymbol: HCLTECH.NS
+- symbol: TCS
+  name: Tata Consultancy Services
+  yahooSymbol: TCS.NS
+- symbol: INFOSYS
+  name: Infosys
+  yahooSymbol: INFY.NS
+- symbol: HDFCAMC
+  name: HDFC Asset Management
+  yahooSymbol: HDFCAMC.NS
+- symbol: NAM-INDIA
+  name: Nippon Life India Asset Management
+  yahooSymbol: NAM-INDIA.NS
+- symbol: HDFCLIFE
+  name: HDFC Life Insurance
+  yahooSymbol: HDFCLIFE.NS
+- symbol: ICICIPRU
+  name: ICICI Prudential Life
+  yahooSymbol: ICICIPRULI.NS
+- symbol: ICICIGI
+  name: ICICI Lombard General Insurance
+  yahooSymbol: ICICIGI.NS
+- symbol: BAJAJFINSC
+  name: Bajaj Finserv
+  yahooSymbol: BAJAJFINSV.NS
+- symbol: BAJAJHLDING
+  name: Bajaj Holdings
+  yahooSymbol: BAJAJHLDNG.NS
+- symbol: BAJFINANCE
+  name: Bajaj Finance
+  yahooSymbol: BAJFINANCE.NS
+- symbol: HINDUNILVR
+  name: Hindustan Unilever
+  yahooSymbol: HINDUNILVR.NS
+- symbol: NESTLEIND
+  name: Nestle India
+  yahooSymbol: NESTLEIND.NS
+- symbol: PGHH
+  name: Procter & Gamble Hygiene
+  yahooSymbol: PGHH.NS
+- symbol: PIDILITIND
+  name: Pidilite Industries
+  yahooSymbol: PIDILITIND.NS
+- symbol: COLPAL
+  name: Colgate-Palmolive India
+  yahooSymbol: COLPAL.NS
+- symbol: DABUR
+  name: Dabur India
+  yahooSymbol: DABUR.NS
+- symbol: GILLETTE
+  name: Gillette India
+  yahooSymbol: GILLETTE.NS
+- symbol: MARICO
+  name: Marico
+  yahooSymbol: MARICO.NS
+- symbol: ITC
+  name: ITC
+  yahooSymbol: ITC.NS
+- symbol: TITAN
+  name: Titan Company
+  yahooSymbol: TITAN.NS
+- symbol: PAGEIND
+  name: Page Industries
+  yahooSymbol: PAGEIND.NS
+- symbol: BATAIND
+  name: Bata India
+  yahooSymbol: BATAINDIA.NS
+- symbol: HAVELLS
+  name: Havells India
+  yahooSymbol: HAVELLS.NS
+- symbol: VOLTAS
+  name: Voltas
+  yahooSymbol: VOLTAS.NS
+- symbol: GLAXO
+  name: GlaxoSmithKline Pharmaceuticals
+  yahooSymbol: GLAXO.NS
+- symbol: ABBOTIND
+  name: Abbott India
+  yahooSymbol: ABBOTINDIA.NS
+- symbol: PFIZER
+  name: Pfizer India
+  yahooSymbol: PFIZER.NS
+- symbol: SANOFI
+  name: Sanofi India
+  yahooSymbol: SANOFI.NS
+- symbol: ASIANPAINT
+  name: Asian Paints
+  yahooSymbol: ASIANPAINT.NS
+- symbol: BERGERPAINT
+  name: Berger Paints
+  yahooSymbol: BERGEPAINT.NS
+- symbol: MARUTI
+  name: Maruti Suzuki
+  yahooSymbol: MARUTI.NS
+- symbol: BAJAJ-AUTO
+  name: Bajaj Auto
+  yahooSymbol: BAJAJ-AUTO.NS

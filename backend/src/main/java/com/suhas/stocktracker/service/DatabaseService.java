@@ -1,7 +1,4 @@
 package com.suhas.stocktracker.service;
-
-import com.suhas.stocktracker.model.AlertPayload;
-import com.suhas.stocktracker.model.AlertRecord;
 import com.suhas.stocktracker.model.ScannerResult;
 import com.suhas.stocktracker.model.ScannerRun;
 import com.suhas.stocktracker.model.StrategyType;
@@ -14,7 +11,6 @@ import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,25 +24,6 @@ public class DatabaseService {
     @PostConstruct
     void initialize() {
         ensureDataDirectory();
-        jdbcTemplate.execute("""
-            CREATE TABLE IF NOT EXISTS alerts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                ticker TEXT NOT NULL,
-                action TEXT NOT NULL,
-                strategy TEXT NOT NULL,
-                exchange TEXT DEFAULT 'NSE',
-                price REAL,
-                timeframe TEXT,
-                notes TEXT,
-                source TEXT DEFAULT 'tradingview',
-                event_time TEXT NOT NULL,
-                created_at TEXT NOT NULL
-            )
-            """);
-        jdbcTemplate.execute("""
-            CREATE INDEX IF NOT EXISTS idx_alerts_ticker_event_time
-            ON alerts (ticker, event_time DESC)
-            """);
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS strategy_scanner_runs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,6 +48,10 @@ public class DatabaseService {
                 sma50 REAL,
                 sma200 REAL,
                 percent_move REAL,
+                entry_price REAL,
+                target_price REAL,
+                sequence_start_date TEXT,
+                sequence_end_date TEXT,
                 percent_below_lifetime_high REAL,
                 high_52_week REAL,
                 low_52_week REAL,
@@ -81,6 +62,10 @@ public class DatabaseService {
                 PRIMARY KEY (strategy_slug, ticker)
             )
             """);
+        ensureColumn("strategy_scanner_results", "entry_price", "REAL");
+        ensureColumn("strategy_scanner_results", "target_price", "REAL");
+        ensureColumn("strategy_scanner_results", "sequence_start_date", "TEXT");
+        ensureColumn("strategy_scanner_results", "sequence_end_date", "TEXT");
     }
 
     private void ensureDataDirectory() {
@@ -91,50 +76,12 @@ public class DatabaseService {
         }
     }
 
-    public long insertAlert(AlertPayload payload) {
-        String now = OffsetDateTime.now().toString();
-        String eventTime = payload.eventTime() != null ? payload.eventTime() : now;
-        jdbcTemplate.update("""
-            INSERT INTO alerts (
-                ticker, action, strategy, exchange, price, timeframe,
-                notes, source, event_time, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            payload.ticker().trim().toUpperCase(),
-            payload.action().trim().toUpperCase(),
-            payload.strategy() == null || payload.strategy().isBlank() ? "Unnamed Strategy" : payload.strategy(),
-            payload.exchange() == null || payload.exchange().isBlank() ? "NSE" : payload.exchange().trim().toUpperCase(),
-            payload.price(),
-            payload.timeframe(),
-            payload.notes(),
-            payload.source() == null || payload.source().isBlank() ? "tradingview" : payload.source(),
-            eventTime,
-            now
-        );
-        return jdbcTemplate.queryForObject("SELECT last_insert_rowid()", Long.class);
-    }
-
-    public List<AlertRecord> fetchRecentAlerts(int limit) {
-        return jdbcTemplate.query("""
-            SELECT *
-            FROM alerts
-            ORDER BY event_time DESC, id DESC
-            LIMIT ?
-            """, alertRowMapper(), limit);
-    }
-
-    public List<AlertRecord> fetchLatestAlertsPerTicker() {
-        return jdbcTemplate.query("""
-            SELECT a.*
-            FROM alerts a
-            INNER JOIN (
-                SELECT ticker, MAX(event_time) AS latest_event_time
-                FROM alerts
-                GROUP BY ticker
-            ) latest
-            ON latest.ticker = a.ticker AND latest.latest_event_time = a.event_time
-            ORDER BY a.event_time DESC
-            """, alertRowMapper());
+    private void ensureColumn(String table, String column, String type) {
+        try {
+            jdbcTemplate.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + type);
+        } catch (Exception ignored) {
+            // Column already exists on subsequent startups.
+        }
     }
 
     public long startScannerRun(StrategyType strategyType) {
@@ -159,9 +106,10 @@ public class DatabaseService {
             jdbcTemplate.update("""
                 INSERT INTO strategy_scanner_results (
                     strategy_slug, ticker, yahoo_symbol, signal, strategy, signal_date, last_close,
-                    sma20, sma50, sma200, percent_move, percent_below_lifetime_high, high_52_week, low_52_week,
+                    sma20, sma50, sma200, percent_move, entry_price, target_price, sequence_start_date, sequence_end_date,
+                    percent_below_lifetime_high, high_52_week, low_52_week,
                     buy_region, sell_region, scanned_at, notes
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(strategy_slug, ticker) DO UPDATE SET
                     yahoo_symbol = excluded.yahoo_symbol,
                     signal = excluded.signal,
@@ -172,6 +120,10 @@ public class DatabaseService {
                     sma50 = excluded.sma50,
                     sma200 = excluded.sma200,
                     percent_move = excluded.percent_move,
+                    entry_price = excluded.entry_price,
+                    target_price = excluded.target_price,
+                    sequence_start_date = excluded.sequence_start_date,
+                    sequence_end_date = excluded.sequence_end_date,
                     percent_below_lifetime_high = excluded.percent_below_lifetime_high,
                     high_52_week = excluded.high_52_week,
                     low_52_week = excluded.low_52_week,
@@ -191,6 +143,10 @@ public class DatabaseService {
                 result.sma50(),
                 result.sma200(),
                 result.percentMove(),
+                result.entryPrice(),
+                result.targetPrice(),
+                result.sequenceStartDate(),
+                result.sequenceEndDate(),
                 result.percentBelowLifetimeHigh(),
                 result.high52Week(),
                 result.low52Week(),
@@ -220,6 +176,10 @@ public class DatabaseService {
             nullableDouble(rs, "sma50"),
             nullableDouble(rs, "sma200"),
             nullableDouble(rs, "percent_move"),
+            nullableDouble(rs, "entry_price"),
+            nullableDouble(rs, "target_price"),
+            rs.getString("sequence_start_date"),
+            rs.getString("sequence_end_date"),
             nullableDouble(rs, "percent_below_lifetime_high"),
             nullableDouble(rs, "high_52_week"),
             nullableDouble(rs, "low_52_week"),
@@ -256,22 +216,6 @@ public class DatabaseService {
             strategyType.slug()
         );
         return count != null && count > 0;
-    }
-
-    private RowMapper<AlertRecord> alertRowMapper() {
-        return (rs, rowNum) -> new AlertRecord(
-            rs.getLong("id"),
-            rs.getString("ticker"),
-            rs.getString("action"),
-            rs.getString("strategy"),
-            rs.getString("exchange"),
-            nullableDouble(rs, "price"),
-            rs.getString("timeframe"),
-            rs.getString("notes"),
-            rs.getString("source"),
-            rs.getString("event_time"),
-            rs.getString("created_at")
-        );
     }
 
     private Double nullableDouble(ResultSet rs, String column) throws SQLException {

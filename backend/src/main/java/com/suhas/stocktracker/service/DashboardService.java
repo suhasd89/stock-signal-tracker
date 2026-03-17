@@ -1,6 +1,5 @@
 package com.suhas.stocktracker.service;
 
-import com.suhas.stocktracker.model.AlertRecord;
 import com.suhas.stocktracker.model.DashboardResponse;
 import com.suhas.stocktracker.model.ScannerResult;
 import com.suhas.stocktracker.model.ScannerRun;
@@ -26,10 +25,6 @@ public class DashboardService {
 
     public DashboardResponse fetchDashboard(StrategyType strategyType) {
         List<WatchlistStock> watchlist = watchlistService.getWatchlistForStrategy(strategyType);
-        Map<String, AlertRecord> latestAlertsByTicker = databaseService.fetchLatestAlertsPerTicker()
-            .stream()
-            .collect(Collectors.toMap(AlertRecord::ticker, Function.identity()));
-        List<AlertRecord> recentAlerts = databaseService.fetchRecentAlerts(50);
         Map<String, ScannerResult> scansByTicker = databaseService.fetchScannerResults(strategyType)
             .stream()
             .collect(Collectors.toMap(ScannerResult::ticker, Function.identity(), (left, right) -> left));
@@ -37,7 +32,6 @@ public class DashboardService {
 
         List<WatchlistRow> rows = watchlist.stream().map(stock -> {
             ScannerResult scan = scansByTicker.get(stock.symbol());
-            AlertRecord alert = latestAlertsByTicker.get(stock.symbol());
             return new WatchlistRow(
                 stock.symbol(),
                 stock.name(),
@@ -54,27 +48,23 @@ public class DashboardService {
                 scan != null ? scan.sma50() : null,
                 scan != null ? scan.sma200() : null,
                 scan != null ? scan.percentMove() : null,
+                scan != null ? scan.entryPrice() : null,
+                scan != null ? scan.targetPrice() : null,
+                scan != null ? scan.sequenceStartDate() : null,
+                scan != null ? scan.sequenceEndDate() : null,
                 scan != null ? scan.percentBelowLifetimeHigh() : null,
                 scan != null ? scan.high52Week() : null,
                 scan != null ? scan.low52Week() : null,
-                alert != null ? alert.action() : "NONE",
-                alert != null ? alert.strategy() : "",
-                alert != null ? alert.price() : null,
-                alert != null ? alert.eventTime() : null,
-                alert != null ? alert.notes() : ""
+                scan != null ? scan.notes() : ""
             );
         }).toList();
 
         int buySignals = (int) rows.stream().filter(row -> "BUY".equals(row.scannerSignal()) || "ALERT".equals(row.scannerSignal())).count();
         int sellSignals = (int) rows.stream().filter(row -> "SELL".equals(row.scannerSignal())).count();
-        List<AlertRecord> orphanAlerts = recentAlerts.stream()
-            .filter(alert -> watchlist.stream().noneMatch(stock -> stock.symbol().equals(alert.ticker())))
-            .toList();
 
         return new DashboardResponse(
             strategyType.slug(),
             rows,
-            recentAlerts,
             Map.of(
                 "trackedStocks", watchlist.size(),
                 "activeSignals", buySignals + sellSignals,
@@ -82,7 +72,6 @@ public class DashboardService {
                 "sellSignals", sellSignals
             ),
             new DashboardResponse.ScannerSummary(latestRun, scansByTicker.size()),
-            orphanAlerts,
             OffsetDateTime.now().toString()
         );
     }

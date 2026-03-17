@@ -10,9 +10,15 @@ spring:
       write-dates-as-timestamps: false
 
 app:
-  webhook-secret: ${WEBHOOK_SECRET:change-me}
   scanner:
     range: 2y
     interval: 1d
     strategy-name: "SMA Strategy: 20/50/200"
     pause-millis: 350
+  watchlists:
+    resources:
+      V40: watchlists/v40.yml
+      V40 NEXT: watchlists/v40-next.yml
+      V200: watchlists/v200.yml
+      BANK: watchlists/bank.yml
+      NBFC: watchlists/nbfc.yml

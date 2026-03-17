@@ -16,13 +16,13 @@ public record WatchlistRow(
     Double sma50,
     Double sma200,
     Double percentMove,
+    Double entryPrice,
+    Double targetPrice,
+    String sequenceStartDate,
+    String sequenceEndDate,
     Double percentBelowLifetimeHigh,
     Double high52Week,
     Double low52Week,
-    String webhookSignal,
-    String webhookStrategy,
-    Double webhookPrice,
-    String webhookTime,
     String notes
 ) {
 }

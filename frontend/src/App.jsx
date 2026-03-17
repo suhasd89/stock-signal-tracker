@@ -9,7 +9,10 @@ const LISTS = [
   { key: "ALL", label: "All Lists" },
   { key: "V40", label: "V40" },
   { key: "V40 NEXT", label: "V40 Next" },
+  { key: "V40NEXT", label: "V40 Next" },
   { key: "V200", label: "V200" },
+  { key: "BANK", label: "Bank" },
+  { key: "NBFC", label: "NBFC" },
 ];
 
 function formatDate(value) {
@@ -30,6 +33,29 @@ function signalClass(signal) {
   if (signal === "BUY" || signal === "ALERT") return "pill buy";
   if (signal === "SELL") return "pill sell";
   return "pill neutral";
+}
+
+function tradingViewUrl(row) {
+  const exchangeSymbol = row.yahooSymbol?.endsWith(".NS")
+    ? row.yahooSymbol.replace(".NS", "")
+    : row.symbol;
+  return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(`NSE:${exchangeSymbol}`)}`;
+}
+
+function buildShareMessage(strategy, activeList, alerts) {
+  const title = `${strategy.toUpperCase()} alerts${activeList === "ALL" ? "" : ` - ${activeList}`}`;
+  if (alerts.length === 0) {
+    return `${title}\nNo BUY or SELL signals found.`;
+  }
+
+  const rows = alerts.map((row) => {
+    const extra = strategy === "sma"
+      ? `Close ${formatPrice(row.scannerPrice)}`
+      : `Entry ${formatPrice(row.entryPrice)} | Target ${formatPrice(row.targetPrice)}`;
+    return `${row.symbol} - ${row.scannerSignal} - ${extra} - ${formatDate(row.scannerSignalDate)}`;
+  });
+
+  return [title, ...rows].join("\n");
 }
 
 export default function App() {
@@ -84,7 +110,7 @@ export default function App() {
   }, [strategy]);
 
   useEffect(() => {
-    if (strategy === "sma" && activeList === "V40 NEXT") {
+    if (strategy === "sma" && (activeList === "V40 NEXT" || activeList === "V40NEXT" || activeList === "V200" || activeList === "BANK" || activeList === "NBFC")) {
       setActiveList("V40");
     }
   }, [strategy, activeList]);
@@ -115,11 +141,12 @@ export default function App() {
   const totalStrategyAlerts = dashboard.watchlist.filter(
     (row) => row.scannerSignal === "BUY" || row.scannerSignal === "SELL" || row.scannerSignal === "ALERT"
   ).length;
+  const shareMessage = buildShareMessage(strategy, activeList, activeScannerAlerts);
   const visibleLists = LISTS.filter((item) => {
     if (item.key === "ALL") {
       return true;
     }
-    if (strategy === "sma" && item.key === "V40 NEXT") {
+    if (strategy === "sma" && item.key !== "V40") {
       return false;
     }
     if (item.key === "V200" && !dashboard.watchlist.some((row) => row.group === "V200")) {
@@ -128,18 +155,37 @@ export default function App() {
     return dashboard.watchlist.some((row) => row.group === item.key);
   });
 
+  const shareByEmail = () => {
+    const subject = encodeURIComponent(`${strategy.toUpperCase()} stock alerts`);
+    const body = encodeURIComponent(shareMessage);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
+
+  const shareOnWhatsApp = () => {
+    const text = encodeURIComponent(shareMessage);
+    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
+  };
+
+  const copyAlerts = async () => {
+    await navigator.clipboard.writeText(shareMessage);
+  };
+
+  const openTradingView = (row) => {
+    window.open(tradingViewUrl(row), "_blank", "noopener,noreferrer");
+  };
+
   return (
     <main className="shell">
-      <section className="hero">
-        <div>
+      <section className="hero hero-banner">
+        <div className="hero-copy">
           <p className="eyebrow">Spring Boot + React Dashboard</p>
           <h1>Indian Stock Signal Tracker</h1>
           <p className="subcopy">
-            Track your V40 companies across two historical strategy pages: SMA and V20.
+            Track V40, V40 Next, V200, Bank, and NBFC watchlists with fast list tabs, active alerts, and one-click chart access.
           </p>
         </div>
-        <div className="hero-card">
-          <div className="strategy-tabs">
+        <div className="hero-card hero-metrics">
+          <div className="strategy-tabs strategy-switch">
             {STRATEGIES.map((item) => (
               <button
                 key={item.key}
@@ -151,17 +197,19 @@ export default function App() {
               </button>
             ))}
           </div>
-          <div className="metric">
-            <span>Tracked Stocks</span>
-            <strong>{dashboard.summary.trackedStocks}</strong>
-          </div>
-          <div className="metric">
-            <span>{strategy === "sma" ? "Buy Signals" : "Active Alerts"}</span>
-            <strong>{dashboard.summary.buySignals}</strong>
-          </div>
-          <div className="metric">
-            <span>{strategy === "sma" ? "Sell Signals" : "No. of Sell Signals"}</span>
-            <strong>{dashboard.summary.sellSignals}</strong>
+          <div className="metric-grid">
+            <div className="metric">
+              <span>Tracked Stocks</span>
+              <strong>{dashboard.summary.trackedStocks}</strong>
+            </div>
+            <div className="metric buy-tint">
+              <span>{strategy === "sma" ? "Buy Signals" : "Active Alerts"}</span>
+              <strong>{dashboard.summary.buySignals}</strong>
+            </div>
+            <div className="metric sell-tint">
+              <span>{strategy === "sma" ? "Sell Signals" : "Sell Hits"}</span>
+              <strong>{dashboard.summary.sellSignals}</strong>
+            </div>
           </div>
         </div>
       </section>
@@ -173,10 +221,24 @@ export default function App() {
           type="search"
           placeholder={`Search ${strategy.toUpperCase()} stocks`}
         />
-        <button onClick={runScan} disabled={scanLoading}>
-          {scanLoading ? "Scanning..." : "Run Local Scan"}
-        </button>
-        <button onClick={loadDashboard}>Refresh</button>
+        <div className="toolbar-actions">
+          <button onClick={runScan} disabled={scanLoading}>
+            {scanLoading ? "Scanning..." : "Run Local Scan"}
+          </button>
+          <button onClick={() => loadDashboard()}>Refresh</button>
+        </div>
+      </section>
+
+      <section className="panel panel-accent">
+        <div className="panel-header">
+          <h2>Share Alerts</h2>
+          <p>Send the currently visible BUY and SELL signals through your own email app or WhatsApp.</p>
+        </div>
+        <div className="action-row">
+          <button type="button" onClick={shareByEmail}>Share by Email</button>
+          <button type="button" onClick={shareOnWhatsApp}>Share on WhatsApp</button>
+          <button type="button" onClick={copyAlerts}>Copy Alert Text</button>
+        </div>
       </section>
 
       <section className="panel">
@@ -184,7 +246,7 @@ export default function App() {
           <h2>Company Lists</h2>
           <p>Filter the strategy results by watchlist bucket.</p>
         </div>
-        <div className="strategy-tabs">
+        <div className="list-tabs">
           {visibleLists.map((item) => {
             const count = item.key === "ALL"
               ? dashboard.watchlist.length
@@ -192,18 +254,19 @@ export default function App() {
             return (
               <button
                 key={item.key}
-                className={item.key === activeList ? "tab active" : "tab"}
+                className={item.key === activeList ? "tab list-tab active" : "tab list-tab"}
                 onClick={() => setActiveList(item.key)}
                 type="button"
               >
-                {item.label} ({count})
+                <span>{item.label}</span>
+                <strong>{count}</strong>
               </button>
             );
           })}
         </div>
       </section>
 
-      <section className="panel">
+      <section className="panel panel-status">
         <div className="panel-header">
           <h2>Scanner Status</h2>
           <p>
@@ -226,7 +289,7 @@ export default function App() {
           <p>
             {strategy === "sma"
               ? "Stocks currently in BUY or SELL region from the SMA historical scan."
-              : "Stocks whose latest completed V20 green-candle sequence met the 20% threshold."}
+              : "Stocks whose latest valid V20 setup met the 20% threshold and passed the list-specific rules."}
           </p>
         </div>
         <div className="alerts">
@@ -240,7 +303,19 @@ export default function App() {
             </div>
           ) : (
             activeScannerAlerts.map((row) => (
-              <article className="alert-card" key={row.symbol}>
+              <article
+                className="alert-card clickable-card"
+                key={row.symbol}
+                onClick={() => openTradingView(row)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openTradingView(row);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+              >
                 <div className="alert-head">
                   <strong>{row.symbol}</strong>
                   <span className={signalClass(row.scannerSignal)}>{row.scannerSignal}</span>
@@ -256,7 +331,7 @@ export default function App() {
                   </small>
                 ) : (
                   <small>
-                    Move: {row.percentMove?.toFixed(2) ?? "-"}% | 200 SMA: {row.sma200?.toFixed(2) ?? "-"} | Below lifetime high: {row.percentBelowLifetimeHigh?.toFixed(2) ?? "-"}%
+                    Entry: {formatPrice(row.entryPrice)} | Target: {formatPrice(row.targetPrice)} | Move: {row.percentMove?.toFixed(2) ?? "-"}%
                   </small>
                 )}
               </article>
@@ -271,7 +346,7 @@ export default function App() {
           <p>
             {strategy === "sma"
               ? "Local scanner signal for each stock using your SMA 20/50/200 logic."
-              : "Latest historical V20 trigger for each stock using your V20 Pine logic."}
+              : "Latest valid V20 setup for each stock, including entry, target, and formation window."}
           </p>
         </div>
         <div className="table-wrap">
@@ -284,20 +359,18 @@ export default function App() {
                   <th>Last Daily Close</th>
                   <th>Signal Date</th>
                   <th>SMA Stack</th>
-                  <th>Webhook Signal</th>
-                  <th>Price</th>
-                  <th>Time</th>
                 </tr>
               ) : (
                 <tr>
                   <th>Stock</th>
                   <th>Scanner Signal</th>
                   <th>Last Close</th>
-                  <th>Signal Date</th>
+                  <th>Formation End</th>
+                  <th>Entry Price</th>
+                  <th>Target Price</th>
                   <th>Move %</th>
+                  <th>Formation Window</th>
                   <th>200 SMA</th>
-                  <th>Below Lifetime High</th>
-                  <th>52W Range</th>
                 </tr>
               )}
             </thead>
@@ -305,7 +378,18 @@ export default function App() {
               {filteredWatchlist.map((row) => (
                 <tr key={row.symbol}>
                   <td>
-                    <div className="stock-cell">
+                    <div
+                      className="stock-cell clickable-stock"
+                      onClick={() => openTradingView(row)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          openTradingView(row);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                    >
                       <strong>{row.symbol}</strong>
                       <span>{row.name} · {row.group}</span>
                     </div>
@@ -320,57 +404,27 @@ export default function App() {
                           ? `20: ${row.sma20.toFixed(2)} | 50: ${row.sma50.toFixed(2)} | 200: ${row.sma200.toFixed(2)}`
                           : "-"}
                       </td>
-                      <td><span className={signalClass(row.webhookSignal)}>{row.webhookSignal}</span></td>
-                      <td>{formatPrice(row.webhookPrice)}</td>
-                      <td>{formatDate(row.webhookTime)}</td>
                     </>
                   ) : (
                     <>
                       <td><span className={signalClass(row.scannerSignal)}>{row.scannerSignal}</span></td>
                       <td>{formatPrice(row.scannerPrice)}</td>
                       <td>{formatDate(row.scannerSignalDate)}</td>
+                      <td>{formatPrice(row.entryPrice)}</td>
+                      <td>{formatPrice(row.targetPrice)}</td>
                       <td>{row.percentMove?.toFixed(2) ? `${row.percentMove.toFixed(2)}%` : "-"}</td>
-                      <td>{row.sma200 ? row.sma200.toFixed(2) : "-"}</td>
-                      <td>{row.percentBelowLifetimeHigh?.toFixed(2) ? `${row.percentBelowLifetimeHigh.toFixed(2)}%` : "-"}</td>
                       <td>
-                        {row.low52Week && row.high52Week
-                          ? `${formatPrice(row.low52Week)} - ${formatPrice(row.high52Week)}`
+                        {row.sequenceStartDate && row.sequenceEndDate
+                          ? `${formatDate(row.sequenceStartDate)} -> ${formatDate(row.sequenceEndDate)}`
                           : "-"}
                       </td>
+                      <td>{row.sma200 ? row.sma200.toFixed(2) : "-"}</td>
                     </>
                   )}
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Recent TradingView Alerts</h2>
-          <p>Newest webhook alerts received by the backend.</p>
-        </div>
-        <div className="alerts">
-          {dashboard.recentAlerts.length === 0 ? (
-            <div className="empty">No webhook alerts received yet.</div>
-          ) : (
-            dashboard.recentAlerts.map((alert) => (
-              <article className="alert-card" key={alert.id}>
-                <div className="alert-head">
-                  <strong>{alert.ticker}</strong>
-                  <span className={signalClass(alert.action)}>{alert.action}</span>
-                </div>
-                <p>{alert.strategy}</p>
-                <div className="alert-meta">
-                  <span>{formatPrice(alert.price)}</span>
-                  <span>{alert.timeframe || "Timeframe N/A"}</span>
-                  <span>{formatDate(alert.eventTime)}</span>
-                </div>
-                {alert.notes ? <small>{alert.notes}</small> : null}
-              </article>
-            ))
-          )}
         </div>
       </section>
     </main>

@@ -1,0 +1,73 @@
+stocks:
+  - symbol: MAHABANK
+    name: Bank of Maha
+    yahooSymbol: MAHABANK.NS
+  - symbol: ICICIBANK
+    name: ICICI Bank
+    yahooSymbol: ICICIBANK.NS
+  - symbol: CANBK
+    name: Canara Bank
+    yahooSymbol: CANBK.NS
+  - symbol: KARURVYSYA
+    name: Karur Vysya Bank
+    yahooSymbol: KARURVYSYA.NS
+  - symbol: SBIN
+    name: St Bk of India
+    yahooSymbol: SBIN.NS
+  - symbol: INDIANB
+    name: Indian Bank
+    yahooSymbol: INDIANB.NS
+  - symbol: UNIONBANK
+    name: Union Bank (I)
+    yahooSymbol: UNIONBANK.NS
+  - symbol: AXISBANK
+    name: Axis Bank
+    yahooSymbol: AXISBANK.NS
+  - symbol: J&KBANK
+    name: J & K Bank
+    yahooSymbol: J&KBANK.NS
+  - symbol: BANKBARODA
+    name: Bank of Baroda
+    yahooSymbol: BANKBARODA.NS
+  - symbol: PNB
+    name: Punjab Natl.Bank
+    yahooSymbol: PNB.NS
+  - symbol: HDFCBANK
+    name: HDFC Bank
+    yahooSymbol: HDFCBANK.NS
+  - symbol: AUBANK
+    name: AU Small Finance
+    yahooSymbol: AUBANK.NS
+  - symbol: TMB
+    name: T N Merc. Bank
+    yahooSymbol: TMB.NS
+  - symbol: SOUTHBANK
+    name: South Ind.Bank
+    yahooSymbol: SOUTHBANK.NS
+  - symbol: IDBI
+    name: IDBI Bank
+    yahooSymbol: IDBI.NS
+  - symbol: KOTAKBANK
+    name: Kotak Mah. Bank
+    yahooSymbol: KOTAKBANK.NS
+  - symbol: FEDERALBNK
+    name: Federal Bank
+    yahooSymbol: FEDERALBNK.NS
+  - symbol: CUB
+    name: City Union Bank
+    yahooSymbol: CUB.NS
+  - symbol: BANKINDIA
+    name: Bank of India
+    yahooSymbol: BANKINDIA.NS
+  - symbol: BANDHANBNK
+    name: Bandhan Bank
+    yahooSymbol: BANDHANBNK.NS
+  - symbol: CENTRALBK
+    name: Central Bank
+    yahooSymbol: CENTRALBK.NS
+  - symbol: KTKBANK
+    name: Karnataka Bank
+    yahooSymbol: KTKBANK.NS
+  - symbol: IOB
+    name: I O B
+    yahooSymbol: IOB.NS

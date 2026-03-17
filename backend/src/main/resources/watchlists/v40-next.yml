@@ -1,0 +1,122 @@
+---
+stocks:
+- symbol: CDSL
+  name: Central Depository Services
+  yahooSymbol: CDSL.NS
+- symbol: BSE
+  name: BSE
+  yahooSymbol: BSE.NS
+- symbol: JIOFIN
+  name: Jio Financial Services
+  yahooSymbol: JIOFIN.NS
+- symbol: CAMS
+  name: Computer Age Management Services
+  yahooSymbol: CAMS.NS
+- symbol: BAJAJHFL
+  name: Bajaj Housing Finance
+  yahooSymbol: BAJAJHFL.NS
+- symbol: ULTRACEMCO
+  name: UltraTech Cement
+  yahooSymbol: ULTRACEMCO.NS
+- symbol: ACC
+  name: ACC
+  yahooSymbol: ACC.NS
+- symbol: ANGELONE
+  name: Angel One
+  yahooSymbol: ANGELONE.NS
+- symbol: MCX
+  name: Multi Commodity Exchange
+  yahooSymbol: MCX.NS
+- symbol: TEAMLEASE
+  name: TeamLease Services
+  yahooSymbol: TEAMLEASE.NS
+- symbol: QUESS
+  name: Quess Corp
+  yahooSymbol: QUESS.NS
+- symbol: APOLLOHSP
+  name: Apollo Hospitals
+  yahooSymbol: APOLLOHOSP.NS
+- symbol: MEDANTA
+  name: Medanta
+  yahooSymbol: GLOBALHEALTH.NS
+- symbol: ASTRAZEN
+  name: AstraZeneca Pharma India
+  yahooSymbol: ASTRAZEN.NS
+- symbol: CIPLA
+  name: Cipla
+  yahooSymbol: CIPLA.NS
+- symbol: ERIS
+  name: Eris Lifesciences
+  yahooSymbol: ERIS.NS
+- symbol: LALPATHLAB
+  name: Dr Lal PathLabs
+  yahooSymbol: LALPATHLAB.NS
+- symbol: FORTIS
+  name: Fortis Healthcare
+  yahooSymbol: FORTIS.NS
+- symbol: 3MINDIA
+  name: 3M India
+  yahooSymbol: 3MINDIA.NS
+- symbol: GODREJCP
+  name: Godrej Consumer Products
+  yahooSymbol: GODREJCP.NS
+- symbol: M&M
+  name: Mahindra & Mahindra
+  yahooSymbol: M&M.NS
+- symbol: KAJARIACER
+  name: Kajaria Ceramics
+  yahooSymbol: KAJARIACER.NS
+- symbol: INDHOTELS
+  name: Indian Hotels
+  yahooSymbol: INDHOTEL.NS
+- symbol: ITCHOTELS
+  name: ITC Hotels
+  yahooSymbol: ITCHOTELS.NS
+- symbol: DMART
+  name: Avenue Supermarts
+  yahooSymbol: DMART.NS
+- symbol: TATAMOTORS
+  name: Tata Motors
+  yahooSymbol: TATAMOTORS.NS
+- symbol: HYUNDAI
+  name: Hyundai Motor India
+  yahooSymbol: HYUNDAI.NS
+- symbol: BLURSTARCO
+  name: Blue Star
+  yahooSymbol: BLUESTARCO.NS
+- symbol: UBL
+  name: United Breweries
+  yahooSymbol: UBL.NS
+- symbol: VBL
+  name: Varun Beverages
+  yahooSymbol: VBL.NS
+- symbol: ADANIPORTS
+  name: Adani Ports and SEZ
+  yahooSymbol: ADANIPORTS.NS
+- symbol: JSWLINFRA
+  name: JSW Infrastructure
+  yahooSymbol: JSWINFRA.NS
+- symbol: DIXON
+  name: Dixon Technologies
+  yahooSymbol: DIXON.NS
+- symbol: HONAUT
+  name: Honeywell Automation India
+  yahooSymbol: HONAUT.NS
+- symbol: RELAXO
+  name: Relaxo Footwears
+  yahooSymbol: RELAXO.NS
+- symbol: BOSCHLTD
+  name: Bosch
+  yahooSymbol: BOSCHLTD.NS
+- symbol: EICHERMOT
+  name: Eicher Motors
+  yahooSymbol: EICHERMOT.NS
+- symbol: UNITDSPR
+  name: United Spirits
+  yahooSymbol: UNITDSPR.NS
+- symbol: RADICO
+  name: Radico Khaitan
+  yahooSymbol: RADICO.NS
+- symbol: MRF
+  name: MRF
+  yahooSymbol: MRF.NS

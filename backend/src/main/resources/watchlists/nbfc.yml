@@ -1,0 +1,61 @@
+stocks:
+  - symbol: BAJFINANCE
+    name: Bajaj Finance
+    yahooSymbol: BAJFINANCE.NS
+  - symbol: BAJAJFINSV
+    name: Bajaj Finserv
+    yahooSymbol: BAJAJFINSV.NS
+  - symbol: IRFC
+    name: I R F C
+    yahooSymbol: IRFC.NS
+  - symbol: JIOFIN
+    name: Jio Financial
+    yahooSymbol: JIOFIN.NS
+  - symbol: PFC
+    name: Power Fin.Corpn.
+    yahooSymbol: PFC.NS
+  - symbol: RECLTD
+    name: REC Ltd
+    yahooSymbol: RECLTD.NS
+  - symbol: CHOLAFIN
+    name: Cholaman.Inv.&Fn
+    yahooSymbol: CHOLAFIN.NS
+  - symbol: SHRIRAMFIN
+    name: Shriram Finance
+    yahooSymbol: SHRIRAMFIN.NS
+  - symbol: BAJAJHLDNG
+    name: Bajaj Holdings
+    yahooSymbol: BAJAJHLDNG.NS
+  - symbol: HDFCAMC
+    name: HDFC AMC
+    yahooSymbol: HDFCAMC.NS
+  - symbol: MUTHOOTFIN
+    name: Muthoot Finance
+    yahooSymbol: MUTHOOTFIN.NS
+  - symbol: SBICARD
+    name: SBI Cards
+    yahooSymbol: SBICARD.NS
+  - symbol: ABCAPITAL
+    name: Aditya Birla Cap
+    yahooSymbol: ABCAPITAL.NS
+  - symbol: HUDCO
+    name: H U D C O
+    yahooSymbol: HUDCO.NS
+  - symbol: SUNDARMFIN
+    name: Sundaram Finance
+    yahooSymbol: SUNDARMFIN.NS
+  - symbol: IREDA
+    name: Indian Renewable
+    yahooSymbol: IREDA.NS
+  - symbol: LTF
+    name: L&T Finance Ltd
+    yahooSymbol: LTF.NS
+  - symbol: NAM-INDIA
+    name: Nippon Life Ind.
+    yahooSymbol: NAM-INDIA.NS
+  - symbol: LICHSGFIN
+    name: LIC Housing Fin.
+    yahooSymbol: LICHSGFIN.NS
+  - symbol: M&MFIN
+    name: M & M Fin. Serv.
+    yahooSymbol: M&MFIN.NS

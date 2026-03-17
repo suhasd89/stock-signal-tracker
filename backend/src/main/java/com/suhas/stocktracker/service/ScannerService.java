@@ -10,7 +10,9 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -35,20 +37,35 @@ public class ScannerService {
         long runId = databaseService.startScannerRun(strategyType);
         List<ScannerResult> results = new ArrayList<>();
         List<String> failed = new ArrayList<>();
+        List<WatchlistStock> stocks = watchlistService.getWatchlistForStrategy(strategyType);
+        Map<String, List<WatchlistStock>> stocksByYahooSymbol = new LinkedHashMap<>();
 
-        for (WatchlistStock stock : watchlistService.getWatchlistForStrategy(strategyType)) {
+        for (WatchlistStock stock : stocks) {
+            stocksByYahooSymbol.computeIfAbsent(stock.yahooSymbol(), ignored -> new ArrayList<>()).add(stock);
+        }
+
+        for (Map.Entry<String, List<WatchlistStock>> entry : stocksByYahooSymbol.entrySet()) {
+            String yahooSymbol = entry.getKey();
+            List<WatchlistStock> matchingStocks = entry.getValue();
             try {
-                List<Candle> candles = fetchCandles(stock.yahooSymbol());
-                results.add(evaluate(strategyType, stock, candles));
+                List<Candle> candles = fetchCandles(yahooSymbol);
+                for (WatchlistStock stock : matchingStocks) {
+                    results.add(evaluate(strategyType, stock, candles));
+                }
             } catch (Exception exception) {
-                failed.add(stock.symbol() + ": " + exception.getMessage());
+                String message = exception.getMessage();
+                for (WatchlistStock stock : matchingStocks) {
+                    failed.add(stock.symbol() + ": " + message);
+                }
             }
 
             try {
                 Thread.sleep(appProperties.scanner().pauseMillis());
             } catch (InterruptedException interruptedException) {
                 Thread.currentThread().interrupt();
-                failed.add(stock.symbol() + ": interrupted");
+                for (WatchlistStock stock : matchingStocks) {
+                    failed.add(stock.symbol() + ": interrupted");
+                }
             }
         }
 
@@ -151,6 +168,10 @@ public class ScannerService {
             null,
             null,
             null,
+            null,
+            null,
+            null,
+            null,
             buyRegion,
             sellRegion,
             OffsetDateTime.now().toString(),
@@ -160,11 +181,17 @@ public class ScannerService {
 
     private ScannerResult evaluateV20(WatchlistStock stock, List<Candle> candles) {
         double minPercentageMove = 20.0;
-        Double sequenceLow = null;
+        Double sequenceEntryLow = null;
         Double sequenceHigh = null;
         boolean sequenceStarted = false;
-        Double lastTriggeredMove = null;
-        String lastTriggeredDate = null;
+        Double firstGreenCandleSma200 = null;
+        Double latestFormationMove = null;
+        Double latestFormationLow = null;
+        Double latestFormationHigh = null;
+        String latestFormationStartDate = null;
+        String latestFormationEndDate = null;
+        String currentSequenceStartDate = null;
+        int latestFormationEndIndex = -1;
         double lifetimeHigh = Double.NEGATIVE_INFINITY;
         List<Double> highs = new ArrayList<>();
         List<Double> lows = new ArrayList<>();
@@ -183,33 +210,88 @@ public class ScannerService {
             boolean isGreenCandle = candle.close() > candle.open();
             if (isGreenCandle) {
                 if (!sequenceStarted) {
-                    sequenceLow = candle.low();
+                    sequenceEntryLow = candle.low();
                     sequenceHigh = candle.high();
                     sequenceStarted = true;
+                    currentSequenceStartDate = candle.time();
+                    firstGreenCandleSma200 = sma(closes, 200);
                 } else {
-                    sequenceLow = Math.min(sequenceLow, candle.low());
                     sequenceHigh = Math.max(sequenceHigh, candle.high());
                 }
             } else {
-                sequenceLow = null;
+                sequenceEntryLow = null;
                 sequenceHigh = null;
                 sequenceStarted = false;
+                currentSequenceStartDate = null;
+                firstGreenCandleSma200 = null;
             }
 
-            if (sequenceStarted && sequenceLow != null && sequenceHigh != null) {
-                double percentageMove = ((sequenceHigh - sequenceLow) / sequenceLow) * 100.0;
+            if (sequenceStarted && sequenceEntryLow != null && sequenceHigh != null) {
+                double percentageMove = ((sequenceHigh - sequenceEntryLow) / sequenceEntryLow) * 100.0;
                 boolean conditionMet = percentageMove >= minPercentageMove;
                 if (conditionMet) {
-                    lastTriggeredMove = percentageMove;
-                    lastTriggeredDate = candle.time();
-                    sequenceLow = null;
+                    boolean passesV200StartRule = !"V200".equalsIgnoreCase(stock.group())
+                        || (firstGreenCandleSma200 != null && sequenceEntryLow < firstGreenCandleSma200);
+                    if (passesV200StartRule) {
+                        latestFormationMove = percentageMove;
+                        latestFormationLow = sequenceEntryLow;
+                        latestFormationHigh = sequenceHigh;
+                        latestFormationStartDate = currentSequenceStartDate;
+                        latestFormationEndDate = candle.time();
+                        latestFormationEndIndex = candleIndex;
+                    }
+                    sequenceEntryLow = null;
                     sequenceHigh = null;
                     sequenceStarted = false;
+                    currentSequenceStartDate = null;
+                    firstGreenCandleSma200 = null;
                 }
             }
         }
 
         Candle latest = candles.getLast();
+        boolean entryTriggered = false;
+        boolean exitTriggered = false;
+        String entryTriggerDate = null;
+        String exitTriggerDate = null;
+
+        if (latestFormationLow != null && latestFormationHigh != null && latestFormationEndIndex >= 0) {
+            for (int index = latestFormationEndIndex + 1; index < candles.size(); index++) {
+                Candle candle = candles.get(index);
+                if (!entryTriggered && candle.low() <= latestFormationLow) {
+                    entryTriggered = true;
+                    entryTriggerDate = candle.time();
+                }
+
+                if (entryTriggered && candle.high() >= latestFormationHigh) {
+                    exitTriggered = true;
+                    exitTriggerDate = candle.time();
+                    break;
+                }
+            }
+        }
+
+        String signal = "NONE";
+        String signalDate = latestFormationEndDate;
+        if (entryTriggered && !exitTriggered) {
+            signal = "BUY";
+            signalDate = entryTriggerDate;
+        } else if (entryTriggered) {
+            signal = "SELL";
+            signalDate = exitTriggerDate;
+        }
+
+        String notes;
+        if (latestFormationLow == null || latestFormationHigh == null) {
+            notes = "No V20 sequence hit the threshold on the available history.";
+        } else if (!entryTriggered) {
+            notes = "Latest V20 setup exists, but price has never revisited the entry level after the formation.";
+        } else if (!exitTriggered) {
+            notes = "Latest V20 setup is active because price revisited the entry level and has not yet reached the target.";
+        } else {
+            notes = "Latest V20 setup completed because price revisited the entry level first and later reached the target.";
+        }
+
         double percentBelowLifetimeHigh = lifetimeHigh > 0
             ? ((lifetimeHigh - latest.close()) / lifetimeHigh) * 100.0
             : 0.0;
@@ -221,23 +303,25 @@ public class ScannerService {
             StrategyType.V20.slug(),
             stock.symbol(),
             stock.yahooSymbol(),
-            lastTriggeredMove != null ? "BUY" : "NONE",
+            signal,
             StrategyType.V20.displayName(),
-            lastTriggeredDate,
+            signalDate,
             latest.close(),
             null,
             null,
             sma200,
-            lastTriggeredMove,
+            latestFormationMove,
+            latestFormationLow,
+            latestFormationHigh,
+            latestFormationStartDate,
+            latestFormationEndDate,
             percentBelowLifetimeHigh,
             high52Week,
             low52Week,
             false,
             false,
             OffsetDateTime.now().toString(),
-            lastTriggeredMove != null
-                ? "Latest completed V20 20% green-candle sequence was on " + lastTriggeredDate + "."
-                : "No V20 sequence hit the threshold on the available history."
+            notes
         );
     }
 
