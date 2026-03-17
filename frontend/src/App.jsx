@@ -5,6 +5,13 @@ const STRATEGIES = [
   { key: "sma", label: "SMA" },
   { key: "v20", label: "V20" },
 ];
+const MANAGEABLE_LISTS = [
+  { key: "V40", label: "V40" },
+  { key: "V40 NEXT", label: "V40 Next" },
+  { key: "V200", label: "V200" },
+  { key: "BANK", label: "Bank" },
+  { key: "NBFC", label: "NBFC" },
+];
 const LISTS = [
   { key: "ALL", label: "All Lists" },
   { key: "V40", label: "V40" },
@@ -70,17 +77,52 @@ function buildShareMessage(strategy, activeList, alerts) {
 }
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(undefined);
   const [dashboard, setDashboard] = useState(null);
+  const [watchlistAdmin, setWatchlistAdmin] = useState(null);
+  const [page, setPage] = useState("dashboard");
   const [query, setQuery] = useState("");
   const [scanLoading, setScanLoading] = useState(false);
   const [bootstrapping, setBootstrapping] = useState(false);
+  const [savingList, setSavingList] = useState(false);
   const [strategy, setStrategy] = useState("sma");
   const [activeList, setActiveList] = useState("ALL");
+  const [manageGroup, setManageGroup] = useState("V200");
+  const [manageText, setManageText] = useState("");
+  const [manageMessage, setManageMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
+  const [authMode, setAuthMode] = useState("login");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const [authSuccess, setAuthSuccess] = useState("");
+  const [authForm, setAuthForm] = useState({
+    username: "",
+    password: "",
+    name: "",
+    email: "",
+  });
 
-  const fetchJson = async (url, options) => {
-    const response = await fetch(url, options);
+  const isAdmin = currentUser?.role === "ADMIN";
+
+  const fetchJson = async (url, options, config = {}) => {
+    const response = await fetch(url, {
+      credentials: "include",
+      ...options,
+    });
     if (!response.ok) {
-      const message = await response.text();
+      const raw = await response.text();
+      let message = raw;
+      try {
+        const parsed = raw ? JSON.parse(raw) : null;
+        message = parsed?.message || message;
+      } catch {
+        // keep raw text fallback
+      }
+      if (response.status === 401 && !config.allowUnauthorized) {
+        setCurrentUser(null);
+        setDashboard(null);
+        setWatchlistAdmin(null);
+      }
       throw new Error(message || `Request failed with status ${response.status}`);
     }
     return response.json();
@@ -92,14 +134,41 @@ export default function App() {
     return payload;
   };
 
+  const loadWatchlists = async () => {
+    const payload = await fetchJson(`${API_BASE}/watchlists`);
+    setWatchlistAdmin(payload);
+    return payload;
+  };
+
+  const loadSession = async () => {
+    try {
+      const payload = await fetchJson(`${API_BASE}/auth/me`, undefined, { allowUnauthorized: true });
+      setCurrentUser(payload.user);
+      return payload.user;
+    } catch {
+      setCurrentUser(null);
+      return null;
+    }
+  };
+
   const runScan = async () => {
     setScanLoading(true);
     try {
       await fetchJson(`${API_BASE}/scanner/run?strategy=${strategy}`, { method: "POST" });
       await loadDashboard();
+      setStatusMessage("Scan completed successfully.");
     } finally {
       setScanLoading(false);
     }
+  };
+
+  const refreshAll = async () => {
+    if (isAdmin) {
+      await Promise.all([loadDashboard(), loadWatchlists()]);
+    } else {
+      await loadDashboard();
+    }
+    setStatusMessage("Dashboard refreshed successfully.");
   };
 
   const maybeBootstrapScan = async (payload) => {
@@ -118,16 +187,180 @@ export default function App() {
   };
 
   useEffect(() => {
+    loadSession();
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+
     loadDashboard(strategy).then(maybeBootstrapScan);
+    if (isAdmin) {
+      loadWatchlists();
+    } else {
+      setWatchlistAdmin(null);
+    }
+
     const interval = window.setInterval(() => loadDashboard(strategy), 15000);
     return () => window.clearInterval(interval);
-  }, [strategy]);
+  }, [currentUser, strategy, isAdmin]);
 
   useEffect(() => {
     if (strategy === "sma" && normalizeGroup(activeList) !== "V40" && activeList !== "ALL") {
       setActiveList("V40");
     }
   }, [strategy, activeList]);
+
+  useEffect(() => {
+    if (!isAdmin && page === "manage") {
+      setPage("dashboard");
+    }
+  }, [isAdmin, page]);
+
+  const updateAuthField = (field, value) => {
+    setAuthForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const login = async () => {
+    setAuthLoading(true);
+    setAuthError("");
+    setAuthSuccess("");
+    try {
+      const payload = await fetchJson(`${API_BASE}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: authForm.username,
+          password: authForm.password,
+        }),
+      }, { allowUnauthorized: true });
+      setCurrentUser(payload.user);
+      setAuthSuccess("Login successful.");
+      setStatusMessage("Welcome back.");
+      setAuthForm((current) => ({ ...current, password: "" }));
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : "Login failed.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const signup = async () => {
+    setAuthLoading(true);
+    setAuthError("");
+    setAuthSuccess("");
+    try {
+      const payload = await fetchJson(`${API_BASE}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: authForm.username,
+          password: authForm.password,
+          name: authForm.name,
+          email: authForm.email,
+        }),
+      }, { allowUnauthorized: true });
+      setAuthSuccess(payload.message || "Account created successfully. Please sign in.");
+      setAuthMode("login");
+      setAuthForm((current) => ({ ...current, password: "" }));
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : "Signup failed.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await fetchJson(`${API_BASE}/auth/logout`, { method: "POST" }, { allowUnauthorized: true });
+    } catch {
+      // ignore and clear local state anyway
+    }
+    setCurrentUser(null);
+    setDashboard(null);
+    setWatchlistAdmin(null);
+    setPage("dashboard");
+    setStatusMessage("Logged out successfully.");
+  };
+
+  if (currentUser === undefined) {
+    return <main className="shell"><div className="empty">Loading dashboard...</div></main>;
+  }
+
+  if (!currentUser) {
+    return (
+      <main className="shell auth-shell">
+        <section className="auth-stage">
+          <div className="auth-copy">
+            <p className="eyebrow">Secure Stock Workspace</p>
+            <h1>Track signals with a private login.</h1>
+            <p className="subcopy">
+              Sign in to access your market dashboard, active alerts, and saved watchlists. Only the admin account can manage and replace list data.
+            </p>
+            <div className="auth-highlights">
+              <div className="auth-highlight">
+                <strong>Private access</strong>
+                <span>Your dashboard and scans stay behind login.</span>
+              </div>
+              <div className="auth-highlight">
+                <strong>Role-based pages</strong>
+                <span>Only admins can see and edit company lists.</span>
+              </div>
+              <div className="auth-highlight">
+                <strong>Live scanners</strong>
+                <span>SMA and V20 views stay ready after sign-in.</span>
+              </div>
+            </div>
+          </div>
+          <div className="auth-card">
+            <div className="auth-card-head">
+              <p className="eyebrow">Welcome Back</p>
+              <h2>{authMode === "login" ? "Sign in to continue" : "Create your account"}</h2>
+            </div>
+            <div className="auth-tabs">
+              <button type="button" className={authMode === "login" ? "tab active" : "tab"} onClick={() => setAuthMode("login")}>Sign In</button>
+              <button type="button" className={authMode === "signup" ? "tab active" : "tab"} onClick={() => setAuthMode("signup")}>Sign Up</button>
+            </div>
+            <div className="auth-form">
+              {authMode === "signup" ? (
+                <>
+                  <label className="field-label">
+                    <span>Name</span>
+                    <input value={authForm.name} onChange={(event) => updateAuthField("name", event.target.value)} type="text" placeholder="Your full name" />
+                  </label>
+                  <label className="field-label">
+                    <span>Email</span>
+                    <input value={authForm.email} onChange={(event) => updateAuthField("email", event.target.value)} type="email" placeholder="name@email.com" />
+                  </label>
+                </>
+              ) : null}
+              <label className="field-label">
+                <span>Username</span>
+                <input value={authForm.username} onChange={(event) => updateAuthField("username", event.target.value)} type="text" placeholder="Username" />
+              </label>
+              <label className="field-label">
+                <span>Password</span>
+                <input value={authForm.password} onChange={(event) => updateAuthField("password", event.target.value)} type="password" placeholder="Password" />
+              </label>
+              {authMode === "signup" ? (
+                <small>Password must be 8+ chars with uppercase, lowercase, number, and special character.</small>
+              ) : null}
+              {authError ? <div className="auth-message auth-error">{authError}</div> : null}
+              {authSuccess ? <div className="auth-message auth-success">{authSuccess}</div> : null}
+              <button type="button" onClick={authMode === "login" ? login : signup} disabled={authLoading}>
+                {authLoading ? "Please wait..." : authMode === "login" ? "Login" : "Create Account"}
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   if (!dashboard) {
     return <main className="shell"><div className="empty">Loading dashboard...</div></main>;
@@ -188,6 +421,42 @@ export default function App() {
     window.open(tradingViewUrl(row), "_blank", "noopener,noreferrer");
   };
 
+  const saveWatchlist = async () => {
+    setSavingList(true);
+    setManageMessage("");
+    setStatusMessage("");
+    try {
+      const payload = await fetchJson(`${API_BASE}/watchlists/replace`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          group: manageGroup,
+          rawText: manageText,
+        }),
+      });
+      const nextStrategy = normalizeGroup(manageGroup) === "V40" ? "sma" : "v20";
+      setStrategy(nextStrategy);
+      setActiveList(manageGroup);
+      await Promise.all([loadWatchlists(), loadDashboard(nextStrategy)]);
+      const message = payload.guessedSymbols?.length
+        ? `${payload.message} List saved successfully. Guessed: ${payload.guessedSymbols.join(", ")}`
+        : `${payload.message} List saved successfully.`;
+      setManageMessage(message);
+      setStatusMessage(message);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to save watchlist.";
+      setManageMessage(message);
+      setStatusMessage(message);
+    } finally {
+      setSavingList(false);
+    }
+  };
+
+  const currentManagedCount = watchlistAdmin?.groups?.find((item) => normalizeGroup(item.group) === normalizeGroup(manageGroup))?.count ?? 0;
+  const currentManagedStocks = watchlistAdmin?.stocks?.filter((item) => normalizeGroup(item.group) === normalizeGroup(manageGroup)) ?? [];
+
   return (
     <main className="shell">
       <header className="topbar">
@@ -199,13 +468,19 @@ export default function App() {
           </div>
         </div>
         <nav className="topbar-nav" aria-label="Section navigation">
-          <a href="#overview" className="nav-link">Overview</a>
-          <a href="#alerts" className="nav-link">Alerts</a>
-          <a href="#watchlist" className="nav-link">Watchlist</a>
-          <a href="#share" className="nav-link">Share</a>
+          <button type="button" className={page === "dashboard" ? "nav-link nav-link-button active" : "nav-link nav-link-button"} onClick={() => setPage("dashboard")}>Dashboard</button>
+          {isAdmin ? (
+            <button type="button" className={page === "manage" ? "nav-link nav-link-button active" : "nav-link nav-link-button"} onClick={() => setPage("manage")}>Manage Lists</button>
+          ) : null}
+          <span className="user-pill">{currentUser.name} · {currentUser.role}</span>
+          <button type="button" className="nav-link nav-link-button" onClick={logout}>Logout</button>
         </nav>
       </header>
 
+      {statusMessage ? <div className="status-banner">{statusMessage}</div> : null}
+
+      {page === "dashboard" ? (
+        <>
       <section className="hero hero-banner">
         <div className="hero-copy">
           <p className="eyebrow">Spring Boot + React</p>
@@ -297,7 +572,7 @@ export default function App() {
               <button onClick={runScan} disabled={scanLoading}>
                 {scanLoading ? "Scanning..." : "Run Local Scan"}
               </button>
-              <button className="secondary-button" onClick={() => loadDashboard()}>Refresh</button>
+              <button className="secondary-button" onClick={refreshAll}>Refresh</button>
             </div>
           </div>
         </div>
@@ -391,7 +666,7 @@ export default function App() {
 
       <section className="panel" id="watchlist">
         <div className="panel-header">
-          <h2>{strategy === "sma" ? "SMA Watchlist" : "V20 Watchlist"}</h2>
+          <h2>{strategy === "sma" ? "SMA Watchlist" : "V20 Watchlist"} ({filteredWatchlist.length})</h2>
           <p>
             {strategy === "sma"
               ? "Local scanner signal for each stock using your SMA 20/50/200 logic."
@@ -476,6 +751,90 @@ export default function App() {
           </table>
         </div>
       </section>
+        </>
+      ) : (
+        <>
+      <section className="hero hero-banner manage-hero">
+        <div className="hero-copy">
+          <p className="eyebrow">Database-backed Watchlists</p>
+          <h1>Manage Company Lists</h1>
+          <p className="subcopy">
+            Keep list maintenance separate from the scanning dashboard. Paste one company per line, save the selected bucket, and then jump back to review the updated watchlist.
+          </p>
+        </div>
+        <div className="hero-card hero-metrics">
+          <div className="metric-grid single-column-grid">
+            <div className="metric">
+              <span>Selected List</span>
+              <strong>{manageGroup}</strong>
+            </div>
+            <div className="metric buy-tint">
+              <span>Stored Companies</span>
+              <strong>{currentManagedCount}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="panel panel-manage roomy-panel">
+        <div className="panel-header">
+          <h2>Watchlist Editor</h2>
+          <p>Choose the target group, paste the list, and save. This replaces that group in the database.</p>
+        </div>
+        <div className="manage-grid">
+          <div className="nav-block">
+            <span className="nav-label">List Type</span>
+            <div className="list-tabs compact-tabs">
+              {MANAGEABLE_LISTS.map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  className={manageGroup === item.key ? "tab list-tab active" : "tab list-tab"}
+                  onClick={() => setManageGroup(item.key)}
+                >
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="manage-sidecard">
+            <span className="nav-label">Current Stored Count</span>
+            <strong>{currentManagedCount}</strong>
+            <small>After saving, the app returns to the dashboard and opens the updated list.</small>
+          </div>
+        </div>
+        <textarea
+          className="manage-textarea"
+          value={manageText}
+          onChange={(event) => setManageText(event.target.value)}
+          placeholder={`Paste ${manageGroup} companies here, one per line`}
+        />
+        <div className="toolbar-actions">
+          <button type="button" onClick={saveWatchlist} disabled={savingList || !manageText.trim()}>
+            {savingList ? "Saving..." : `Save ${manageGroup}`}
+          </button>
+          <button type="button" className="secondary-button" onClick={() => setPage("dashboard")}>Back to Dashboard</button>
+        </div>
+        {manageMessage ? <div className="empty manager-message">{manageMessage}</div> : null}
+      </section>
+
+      <section className="panel roomy-panel">
+        <div className="panel-header">
+          <h2>{manageGroup} Current Entries ({currentManagedStocks.length})</h2>
+          <p>This preview is read from the database and helps confirm whether your latest save actually updated the list.</p>
+        </div>
+        <div className="manage-preview-grid">
+          {currentManagedStocks.map((stock) => (
+            <article key={`${stock.group}-${stock.symbol}`} className="preview-card">
+              <strong>{stock.symbol}</strong>
+              <p>{stock.name}</p>
+              <small>{stock.yahooSymbol}</small>
+            </article>
+          ))}
+        </div>
+      </section>
+        </>
+      )}
     </main>
   );
 }

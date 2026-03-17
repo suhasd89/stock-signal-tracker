@@ -1,512 +1,545 @@
 ---
 stocks:
-- symbol: TCS
-  name: TCS
-  yahooSymbol: TCS.NS
-- symbol: INFY
-  name: Infosys
-  yahooSymbol: INFY.NS
-- symbol: SBILIFE
-  name: Life Insurance
-  yahooSymbol: SBILIFE.NS
-- symbol: HINDUNILVR
-  name: Hind. Unilever
-  yahooSymbol: HINDUNILVR.NS
-- symbol: ITC
-  name: ITC
-  yahooSymbol: ITC.NS
-- symbol: HCLTECH
-  name: HCL Technologies
-  yahooSymbol: HCLTECH.NS
-- symbol: MARUTI
-  name: Maruti Suzuki
-  yahooSymbol: MARUTI.NS
-- symbol: SUNPHARMA
-  name: Sun Pharma.Inds.
-  yahooSymbol: SUNPHARMA.NS
-- symbol: HAL
-  name: Hind.Aeronautics
-  yahooSymbol: HAL.NS
-- symbol: BEL
-  name: Bharat Electron
-  yahooSymbol: BEL.NS
-- symbol: COALINDIA
-  name: Coal India
-  yahooSymbol: COALINDIA.NS
-- symbol: ASIANPAINT
-  name: Asian Paints
-  yahooSymbol: ASIANPAINT.NS
-- symbol: DIVISLAB
-  name: Divi's Lab.
-  yahooSymbol: DIVISLAB.NS
-- symbol: TECHM
-  name: Tech Mahindra
-  yahooSymbol: TECHM.NS
-- symbol: HYUNDAI
-  name: Hyundai Motor I
-  yahooSymbol: HYUNDAI.NS
-- symbol: LTIM
-  name: LTIMindtree
-  yahooSymbol: LTIM.NS
-- symbol: VBL
-  name: Varun Beverages
-  yahooSymbol: VBL.NS
-- symbol: SOLARINDS
-  name: Solar Industries
-  yahooSymbol: SOLARINDS.NS
-- symbol: EICHERMOT
-  name: Eicher Motors
-  yahooSymbol: EICHERMOT.NS
-- symbol: PIDILITIND
-  name: Pidilite Inds.
-  yahooSymbol: PIDILITIND.NS
-- symbol: MAZDOCK
-  name: Mazagon Dock
-  yahooSymbol: MAZDOCK.NS
-- symbol: ABB
-  name: A B B
-  yahooSymbol: ABB.NS
-- symbol: CIPLA
-  name: Cipla
-  yahooSymbol: CIPLA.NS
-- symbol: SIEMENS
-  name: Siemens
-  yahooSymbol: SIEMENS.NS
-- symbol: DRREDDY
-  name: Dr Reddy's Labs
-  yahooSymbol: DRREDDY.NS
-- symbol: BSE
-  name: BSE
-  yahooSymbol: BSE.NS
-- symbol: UNITDSPR
-  name: United Spirits
-  yahooSymbol: UNITDSPR.NS
-- symbol: HDFCAMC
-  name: HDFC AMC
-  yahooSymbol: HDFCAMC.NS
-- symbol: CGPOWER
-  name: CG Power & Ind
-  yahooSymbol: CGPOWER.NS
-- symbol: ICICIGI
-  name: ICICI Lombard
-  yahooSymbol: ICICIGI.NS
-- symbol: ZYDUSLIFE
-  name: Zydus Lifesci.
-  yahooSymbol: ZYDUSLIFE.NS
-- symbol: HAVELLS
-  name: Havells India
-  yahooSymbol: HAVELLS.NS
-- symbol: PERSISTENT
-  name: Persistent Sys
-  yahooSymbol: PERSISTENT.NS
-- symbol: BOSCHLTD
-  name: Bosch
-  yahooSymbol: BOSCHLTD.NS
-- symbol: CUMMINSIND
-  name: Cummins India
-  yahooSymbol: CUMMINSIND.NS
-- symbol: POLYCAB
-  name: Polycab India
-  yahooSymbol: POLYCAB.NS
-- symbol: MARICO
-  name: Marico
-  yahooSymbol: MARICO.NS
-- symbol: HEROMOTOCO
-  name: Hero Motocorp
-  yahooSymbol: HEROMOTOCO.NS
-- symbol: SUZLON
-  name: Suzlon Energy
-  yahooSymbol: SUZLON.NS
-- symbol: WAAREEENER
-  name: Waaree Energies
-  yahooSymbol: WAAREEENER.NS
-- symbol: DIXON
-  name: Dixon Technolog.
-  yahooSymbol: DIXON.NS
-- symbol: DABUR
-  name: Dabur India
-  yahooSymbol: DABUR.NS
-- symbol: OFSS
-  name: Oracle Fin.Serv.
-  yahooSymbol: OFSS.NS
-- symbol: LLOYDSME
-  name: Lloyds Metals
-  yahooSymbol: LLOYDSME.NS
-- symbol: COROMANDEL
-  name: Coromandel Inter
-  yahooSymbol: COROMANDEL.NS
-- symbol: ABBOTINDIA
-  name: Abbott India
-  yahooSymbol: ABBOTINDIA.NS
 - symbol: COLPAL
   name: Colgate-Palmoliv
   yahooSymbol: COLPAL.NS
-- symbol: PIIND
-  name: P I Industries
-  yahooSymbol: PIIND.NS
-- symbol: BERGEPAINT
-  name: Berger Paints
-  yahooSymbol: BERGEPAINT.NS
-- symbol: SCHAEFFLER
-  name: Schaeffler India
-  yahooSymbol: SCHAEFFLER.NS
-- symbol: COFORGE
-  name: Coforge
-  yahooSymbol: COFORGE.NS
-- symbol: IRCTC
-  name: I R C T C
-  yahooSymbol: IRCTC.NS
-- symbol: GVTD
-  name: GE Vernova T&D
-  yahooSymbol: GVT&D.NS
-- symbol: NMDC
-  name: NMDC
-  yahooSymbol: NMDC.NS
-- symbol: COCHINSHIP
-  name: Cochin Shipyard
-  yahooSymbol: COCHINSHIP.NS
-- symbol: ALKEM
-  name: Alkem Lab
-  yahooSymbol: ALKEM.NS
-- symbol: SUPREMEIND
-  name: Supreme Inds.
-  yahooSymbol: SUPREMEIND.NS
-- symbol: TIINDIA
-  name: Tube Investments
-  yahooSymbol: TIINDIA.NS
-- symbol: GLAXO
-  name: Glaxosmi. Pharma
-  yahooSymbol: GLAXO.NS
-- symbol: MPHASIS
-  name: Mphasis
-  yahooSymbol: MPHASIS.NS
-- symbol: PAGEIND
-  name: Page Industries
-  yahooSymbol: PAGEIND.NS
-- symbol: HEXAWARE
-  name: Hexaware Tech.
-  yahooSymbol: HEXAWARE.NS
-- symbol: APLAPOLLO
-  name: APL Apollo Tubes
-  yahooSymbol: APLAPOLLO.NS
-- symbol: NAM-INDIA
-  name: Nippon Life Ind.
-  yahooSymbol: NAM-INDIA.NS
-- symbol: LTTS
-  name: L&T Technology
-  yahooSymbol: LTTS.NS
-- symbol: PETRONET
-  name: Petronet LNG
-  yahooSymbol: PETRONET.NS
-- symbol: AUTHUM
-  name: Authum Invest
-  yahooSymbol: AUTHUM.NS
 - symbol: PGHH
   name: P & G Hygiene
   yahooSymbol: PGHH.NS
-- symbol: CRISIL
-  name: CRISIL
-  yahooSymbol: CRISIL.NS
-- symbol: ASTRAL
-  name: Astral
-  yahooSymbol: ASTRAL.NS
-- symbol: GODFRYPHLP
-  name: Godfrey Phillips
-  yahooSymbol: GODFRYPHLP.NS
-- symbol: MCX
-  name: Multi Comm. Exc.
-  yahooSymbol: MCX.NS
-- symbol: TATAELXSI
-  name: Tata Elxsi
-  yahooSymbol: TATAELXSI.NS
-- symbol: KPITTECH
-  name: KPIT Technologi.
-  yahooSymbol: KPITTECH.NS
-- symbol: GRSE
-  name: Garden Reach Sh.
-  yahooSymbol: GRSE.NS
-- symbol: KPRMILL
-  name: K P R Mill Ltd
-  yahooSymbol: KPRMILL.NS
-- symbol: CDSL
-  name: C D S L
-  yahooSymbol: CDSL.NS
-- symbol: KEI
-  name: KEI Industries
-  yahooSymbol: KEI.NS
-- symbol: NATIONALUM
-  name: Natl. Aluminium
-  yahooSymbol: NATIONALUM.NS
-- symbol: AWL
-  name: AWL Agri Busine.
-  yahooSymbol: AWL.NS
-- symbol: BLUESTARCO
-  name: Blue Star
-  yahooSymbol: BLUESTARCO.NS
-- symbol: AJANTPHARM
-  name: Ajanta Pharma
-  yahooSymbol: AJANTPHARM.NS
-- symbol: GILLETTE
-  name: Gillette India
-  yahooSymbol: GILLETTE.NS
-- symbol: 3MINDIA
-  name: 3M India
-  yahooSymbol: 3MINDIA.NS
-- symbol: APARINDS
-  name: Apar Inds.
-  yahooSymbol: APARINDS.NS
-- symbol: NBCC
-  name: NBCC
-  yahooSymbol: NBCC.NS
-- symbol: IGL
-  name: Indraprastha Gas
-  yahooSymbol: IGL.NS
-- symbol: TATATECH
-  name: Tata Technolog.
-  yahooSymbol: TATATECH.NS
-- symbol: JBCHEPHARM
-  name: J B Chemicals &
-  yahooSymbol: JBCHEPHARM.NS
-- symbol: MSUMI
-  name: Motherson Wiring
-  yahooSymbol: MSUMI.NS
-- symbol: PFIZER
-  name: Pfizer
-  yahooSymbol: PFIZER.NS
-- symbol: ZFCVINDIA
-  name: ZF Commercial
-  yahooSymbol: ZFCVINDIA.NS
-- symbol: BAYERCROP
-  name: Bayer Crop Sci.
-  yahooSymbol: BAYERCROP.NS
-- symbol: EMCURE
-  name: Emcure Pharma
-  yahooSymbol: EMCURE.NS
-- symbol: TIMKEN
-  name: Timken India
-  yahooSymbol: TIMKEN.NS
-- symbol: SUMICHEM
-  name: Sumitomo Chemi.
-  yahooSymbol: SUMICHEM.NS
-- symbol: LALPATHLAB
-  name: Dr Lal Pathlabs
-  yahooSymbol: LALPATHLAB.NS
-- symbol: EMAMILTD
-  name: Emami
-  yahooSymbol: EMAMILTD.NS
-- symbol: WELCORP
-  name: Welspun Corp
-  yahooSymbol: WELCORP.NS
-- symbol: HINDCOPPER
-  name: Hindustan Copper
-  yahooSymbol: HINDCOPPER.NS
-- symbol: SUNTV
-  name: Sun TV Network
-  yahooSymbol: SUNTV.NS
-- symbol: SKFINDIA
-  name: SKF India
-  yahooSymbol: SKFINDIA.NS
-- symbol: CHAMBLFERT
-  name: Chambal Fert.
-  yahooSymbol: CHAMBLFERT.NS
-- symbol: KFINTECH
-  name: KFin Technolog.
-  yahooSymbol: KFINTECH.NS
-- symbol: ABSLAMC
-  name: Aditya AMC
-  yahooSymbol: ABSLAMC.NS
-- symbol: HIMADRI
-  name: Himadri Special
-  yahooSymbol: HIMADRI.NS
-- symbol: EIHOTEL
-  name: EIH
-  yahooSymbol: EIHOTEL.NS
-- symbol: POLYMED
-  name: Poly Medicure
-  yahooSymbol: POLYMED.NS
-- symbol: CAMS
-  name: Cams Services
-  yahooSymbol: CAMS.NS
+- symbol: NESTLEIND
+  name: Nestle India
+  yahooSymbol: NESTLEIND.NS
+- symbol: WAAREERTL
+  name: Waaree Renewab.
+  yahooSymbol: WAAREERTL.NS
+- symbol: OSWALPUMPS
+  name: Oswal Pumps
+  yahooSymbol: OSWALPUMPS.NS
+- symbol: TCS
+  name: TCS
+  yahooSymbol: TCS.NS
+- symbol: GLAXO
+  name: Glaxosmi. Pharma
+  yahooSymbol: GLAXO.NS
+- symbol: BILLION
+  name: Billionbrains
+  yahooSymbol: BILLION.NS
 - symbol: CASTROLIND
   name: Castrol India
   yahooSymbol: CASTROLIND.NS
-- symbol: RATNAMANI
-  name: Ratnamani Metals
-  yahooSymbol: RATNAMANI.NS
-- symbol: VINATIORGA
-  name: Vinati Organics
-  yahooSymbol: VINATIORGA.NS
-- symbol: ZENSARTECH
-  name: Zensar Tech.
-  yahooSymbol: ZENSARTECH.NS
-- symbol: CONCORDBIO
-  name: Concord Biotech
-  yahooSymbol: CONCORDBIO.NS
-- symbol: TRITURBINE
-  name: Triveni Turbine
-  yahooSymbol: TRITURBINE.NS
-- symbol: FORCEMOT
-  name: Force Motors
-  yahooSymbol: FORCEMOT.NS
-- symbol: GRINDWELL
-  name: Grindwell Norton
-  yahooSymbol: GRINDWELL.NS
+- symbol: INGERRAND
+  name: Ingersoll-Rand
+  yahooSymbol: INGERRAND.NS
+- symbol: PAGEIND
+  name: Page Industries
+  yahooSymbol: PAGEIND.NS
+- symbol: SANOFI
+  name: Sanofi India
+  yahooSymbol: SANOFI.NS
+- symbol: TENNECO
+  name: Tenneco Clean
+  yahooSymbol: TENNECO.NS
+- symbol: LGEIL
+  name: LG Electronics
+  yahooSymbol: LGEIL.NS
 - symbol: ANANDRATHI
   name: Anand Rathi Wea.
   yahooSymbol: ANANDRATHI.NS
+- symbol: GILLETTE
+  name: Gillette India
+  yahooSymbol: GILLETTE.NS
+- symbol: CAMS
+  name: Cams Services
+  yahooSymbol: CAMS.NS
+- symbol: GVT&D
+  name: GE Vernova T&D
+  yahooSymbol: GVT&D.NS
+- symbol: HYUNDAI
+  name: Hyundai Motor I
+  yahooSymbol: HYUNDAI.NS
+- symbol: IGIL
+  name: International Ge
+  yahooSymbol: IGIL.NS
+- symbol: IEX
+  name: Indian Energy Ex
+  yahooSymbol: IEX.NS
+- symbol: SBILIFE
+  name: Life Insurance
+  yahooSymbol: SBILIFE.NS
+- symbol: IRCTC
+  name: I R C T C
+  yahooSymbol: IRCTC.NS
+- symbol: CMPDI
+  name: Central Mine Pla
+  yahooSymbol: CMPDI.NS
+- symbol: COALINDIA
+  name: Coal India
+  yahooSymbol: COALINDIA.NS
+- symbol: PGHL
+  name: P & G Health Ltd
+  yahooSymbol: PGHL.NS
+- symbol: BSE
+  name: BSE
+  yahooSymbol: BSE.NS
+- symbol: ABBOTINDIA
+  name: Abbott India
+  yahooSymbol: ABBOTINDIA.NS
+- symbol: MARICO
+  name: Marico
+  yahooSymbol: MARICO.NS
+- symbol: GANESHHOUC
+  name: Ganesh Housing
+  yahooSymbol: GANESHHOUC.NS
+- symbol: NATIONALUM
+  name: Natl. Aluminium
+  yahooSymbol: NATIONALUM.NS
+- symbol: HDFCAMC
+  name: HDFC AMC
+  yahooSymbol: HDFCAMC.NS
+- symbol: MAZDOCK
+  name: Mazagon Dock
+  yahooSymbol: MAZDOCK.NS
+- symbol: MCX
+  name: Multi Comm. Exc.
+  yahooSymbol: MCX.NS
+- symbol: MOTHERSON
+  name: Motherson Wiring
+  yahooSymbol: MOTHERSON.NS
+- symbol: MISHTANN
+  name: Mishtann Foods
+  yahooSymbol: MISHTANN.NS
+- symbol: CDSL
+  name: C D S L
+  yahooSymbol: CDSL.NS
+- symbol: TRAVELFOOD
+  name: Travel Food
+  yahooSymbol: TRAVELFOOD.NS
+- symbol: AKZOINDIA
+  name: Akzo Nobel
+  yahooSymbol: AKZOINDIA.NS
+- symbol: TRITURBINE
+  name: Triveni Turbine
+  yahooSymbol: TRITURBINE.NS
+- symbol: PACEDIGITEK
+  name: Pace Digitek
+  yahooSymbol: PACEDIGITEK.NS
+- symbol: NAM-INDIA
+  name: Nippon Life Ind.
+  yahooSymbol: NAM-INDIA.NS
+- symbol: OFSS
+  name: Oracle Fin.Serv.
+  yahooSymbol: OFSS.NS
+- symbol: ACE
+  name: Action Const.Eq.
+  yahooSymbol: ACE.NS
+- symbol: KPITTECH
+  name: KPIT Technologi.
+  yahooSymbol: KPITTECH.NS
+- symbol: BLUEJET
+  name: Blue Jet Health
+  yahooSymbol: BLUEJET.NS
+- symbol: ENRIN
+  name: Siemens Ener.Ind
+  yahooSymbol: ENRIN.NS
+- symbol: BEL
+  name: Bharat Electron
+  yahooSymbol: BEL.NS
+- symbol: 3MINDIA
+  name: 3M India
+  yahooSymbol: 3MINDIA.NS
+- symbol: SOLARINDS
+  name: Solar Industries
+  yahooSymbol: SOLARINDS.NS
+- symbol: INFY
+  name: Infosys
+  yahooSymbol: INFY.NS
+- symbol: CGPOWER
+  name: CG Power & Ind
+  yahooSymbol: CGPOWER.NS
+- symbol: ZENTEC
+  name: Zen Technologies
+  yahooSymbol: ZENTEC.NS
+- symbol: JYOTHYLAB
+  name: Jyothy Labs
+  yahooSymbol: JYOTHYLAB.NS
+- symbol: ITC
+  name: ITC
+  yahooSymbol: ITC.NS
+- symbol: GRSE
+  name: Garden Reach Sh.
+  yahooSymbol: GRSE.NS
+- symbol: CUMMINSIND
+  name: Cummins India
+  yahooSymbol: CUMMINSIND.NS
+- symbol: TATAELXSI
+  name: Tata Elxsi
+  yahooSymbol: TATAELXSI.NS
+- symbol: JAIBALAJI
+  name: Jai Balaji Inds.
+  yahooSymbol: JAIBALAJI.NS
+- symbol: ABSLAMC
+  name: Aditya AMC
+  yahooSymbol: ABSLAMC.NS
+- symbol: SHARDAMOTR
+  name: Sharda Motor
+  yahooSymbol: SHARDAMOTR.NS
+- symbol: CRISIL
+  name: CRISIL
+  yahooSymbol: CRISIL.NS
+- symbol: INDIAMART
+  name: Indiamart Inter.
+  yahooSymbol: INDIAMART.NS
+- symbol: CIGNITITEC
+  name: Cigniti Tech.
+  yahooSymbol: CIGNITITEC.NS
+- symbol: HAL
+  name: Hind.Aeronautics
+  yahooSymbol: HAL.NS
+- symbol: BLS
+  name: BLS Internat.
+  yahooSymbol: BLS.NS
+- symbol: NBCC
+  name: NBCC
+  yahooSymbol: NBCC.NS
+- symbol: NATCOPHARM
+  name: Natco Pharma
+  yahooSymbol: NATCOPHARM.NS
+- symbol: KFINTECH
+  name: KFin Technolog.
+  yahooSymbol: KFINTECH.NS
+- symbol: APARINDS
+  name: Apar Inds.
+  yahooSymbol: APARINDS.NS
+- symbol: SUZLON
+  name: Suzlon Energy
+  yahooSymbol: SUZLON.NS
+- symbol: EMAMILTD
+  name: Emami
+  yahooSymbol: EMAMILTD.NS
+- symbol: AJANTPHARM
+  name: Ajanta Pharma
+  yahooSymbol: AJANTPHARM.NS
+- symbol: HCLTECH
+  name: HCL Technologies
+  yahooSymbol: HCLTECH.NS
+- symbol: BALUFORGE
+  name: Balu Forge
+  yahooSymbol: BALUFORGE.NS
+- symbol: AUTHUM
+  name: Authum Invest
+  yahooSymbol: AUTHUM.NS
+- symbol: PERSISTENT
+  name: Persistent Systems
+  yahooSymbol: PERSISTENT.NS
+- symbol: HEROMOTOCO
+  name: Hero Motocorp
+  yahooSymbol: HEROMOTOCO.NS
+- symbol: HEXAWARE
+  name: Hexaware Tech.
+  yahooSymbol: HEXAWARE.NS
+- symbol: FORCEMOT
+  name: Force Motors
+  yahooSymbol: FORCEMOT.NS
+- symbol: ABB
+  name: A B B
+  yahooSymbol: ABB.NS
+- symbol: PIDILITIND
+  name: Pidilite Inds.
+  yahooSymbol: PIDILITIND.NS
+- symbol: EICHERMOT
+  name: Eicher Motors
+  yahooSymbol: EICHERMOT.NS
+- symbol: SCHAEFFLER
+  name: Schaeffler India
+  yahooSymbol: SCHAEFFLER.NS
+- symbol: POLYCAB
+  name: Polycab India
+  yahooSymbol: POLYCAB.NS
+- symbol: NMDC
+  name: NMDC
+  yahooSymbol: NMDC.NS
+- symbol: CLEAN
+  name: Clean Science
+  yahooSymbol: CLEAN.NS
+- symbol: TANLA
+  name: Tanla Platforms
+  yahooSymbol: TANLA.NS
+- symbol: VOLTAMP
+  name: Volt.Transform.
+  yahooSymbol: VOLTAMP.NS
+- symbol: BCCL
+  name: Bharat Coking
+  yahooSymbol: BCCL.NS
+- symbol: LALPATHLAB
+  name: Dr Lal Pathlabs
+  yahooSymbol: LALPATHLAB.NS
+- symbol: SKFINDIA
+  name: SKF India
+  yahooSymbol: SKFINDIA.NS
+- symbol: ANTHEM
+  name: Anthem Bioscienc
+  yahooSymbol: ANTHEM.NS
+- symbol: ELECON
+  name: Elecon Engg.Co
+  yahooSymbol: ELECON.NS
+- symbol: CONCORDBIO
+  name: Concord Biotech
+  yahooSymbol: CONCORDBIO.NS
+- symbol: DHANUKA
+  name: Dhanuka Agritech
+  yahooSymbol: DHANUKA.NS
+- symbol: LTTS
+  name: L&T Technology
+  yahooSymbol: LTTS.NS
 - symbol: ECLERX
   name: eClerx Services
   yahooSymbol: ECLERX.NS
 - symbol: NEWGEN
   name: Newgen Software
   yahooSymbol: NEWGEN.NS
-- symbol: IEX
-  name: Indian Energy Ex
-  yahooSymbol: IEX.NS
-- symbol: UTIAMC
-  name: UTI AMC
-  yahooSymbol: UTIAMC.NS
-- symbol: JWL
-  name: Jupiter Wagons
-  yahooSymbol: JWL.NS
-- symbol: NATCOPHARM
-  name: Natco Pharma
-  yahooSymbol: NATCOPHARM.NS
-- symbol: CAPLIPOINT
-  name: Caplin Point Lab
-  yahooSymbol: CAPLIPOINT.NS
-- symbol: BLUEJET
-  name: Blue Jet Health
-  yahooSymbol: BLUEJET.NS
-- symbol: IGIL
-  name: International Ge
-  yahooSymbol: IGIL.NS
-- symbol: INDIAMART
-  name: Indiamart Inter.
-  yahooSymbol: INDIAMART.NS
-- symbol: SPLPETRO
-  name: Supreme Petroch.
-  yahooSymbol: SPLPETRO.NS
-- symbol: RRKABEL
-  name: R R Kabel
-  yahooSymbol: RRKABEL.NS
-- symbol: BLS
-  name: BLS Internat.
-  yahooSymbol: BLS.NS
-- symbol: KIRLOSBROS
-  name: Kirl. Brothers
-  yahooSymbol: KIRLOSBROS.NS
-- symbol: ELECON
-  name: Elecon Engg.Co
-  yahooSymbol: ELECON.NS
-- symbol: AKZOINDIA
-  name: Akzo Nobel
-  yahooSymbol: AKZOINDIA.NS
-- symbol: ACE
-  name: Action Const.Eq.
-  yahooSymbol: ACE.NS
-- symbol: FINEORG
-  name: Fine Organic
-  yahooSymbol: FINEORG.NS
-- symbol: NCC
-  name: NCC
-  yahooSymbol: NCC.NS
-- symbol: INDEGENE
-  name: Indegene
-  yahooSymbol: INDEGENE.NS
-- symbol: SANOFI
-  name: Sanofi India
-  yahooSymbol: SANOFI.NS
-- symbol: MGL
-  name: Mahanagar Gas
-  yahooSymbol: MGL.NS
-- symbol: RITES
-  name: Rites
-  yahooSymbol: RITES.NS
-- symbol: CELLO
-  name: Cello World
-  yahooSymbol: CELLO.NS
-- symbol: ENGINERSIN
-  name: Engineers India
-  yahooSymbol: ENGINERSIN.NS
-- symbol: GRAVITA
-  name: Gravita India
-  yahooSymbol: GRAVITA.NS
-- symbol: ALIVUS
-  name: Alivus Life
-  yahooSymbol: ALIVUS.NS
-- symbol: GPIL
-  name: Godawari Power
-  yahooSymbol: GPIL.NS
-- symbol: JYOTHYLAB
-  name: Jyothy Labs
-  yahooSymbol: JYOTHYLAB.NS
-- symbol: BSOFT
-  name: Birlasoft Ltd
-  yahooSymbol: BSOFT.NS
-- symbol: SHAKTIPUMP
-  name: Shakti Pumps
-  yahooSymbol: SHAKTIPUMP.NS
-- symbol: MARKSANS
-  name: Marksans Pharma
-  yahooSymbol: MARKSANS.NS
-- symbol: SHRIPISTON
-  name: Shriram Pistons
-  yahooSymbol: SHRIPISTON.NS
-- symbol: AVANTIFEED
-  name: Avanti Feeds
-  yahooSymbol: AVANTIFEED.NS
-- symbol: GARFIBRES
-  name: Garware Hi Tech
-  yahooSymbol: GARFIBRES.NS
-- symbol: TANLA
-  name: Tanla Platforms
-  yahooSymbol: TANLA.NS
-- symbol: TCI
-  name: Transport Corp.
-  yahooSymbol: TCI.NS
-- symbol: VOLTAMP
-  name: Volt.Transform.
-  yahooSymbol: VOLTAMP.NS
-- symbol: GANESHHOUC
-  name: Ganesh Housing
-  yahooSymbol: GANESHHOUC.NS
-- symbol: CMSINFO
-  name: CMS Info Systems
-  yahooSymbol: CMSINFO.NS
-- symbol: SURYAROSNI
-  name: Surya Roshni
-  yahooSymbol: SURYAROSNI.NS
-- symbol: GPPL
-  name: Guj Pipavav Port
-  yahooSymbol: GPPL.NS
-- symbol: NESCO
-  name: NESCO
-  yahooSymbol: NESCO.NS
-- symbol: MANINFRA
-  name: Man Infra
-  yahooSymbol: MANINFRA.NS
-- symbol: SHARDAMOTR
-  name: Sharda Motor
-  yahooSymbol: SHARDAMOTR.NS
-- symbol: GHCL
-  name: GHCL
-  yahooSymbol: GHCL.NS
-- symbol: DBCORP
-  name: D B Corp
-  yahooSymbol: DBCORP.NS
-- symbol: SHAREINDIA
-  name: Share India Sec.
-  yahooSymbol: SHAREINDIA.NS
-- symbol: IMFA
-  name: Indian Metals
-  yahooSymbol: IMFA.NS
-- symbol: MSTCLTD
-  name: MSTC
-  yahooSymbol: MSTCLTD.NS
 - symbol: MAITHANALL
   name: Maithan Alloys
   yahooSymbol: MAITHANALL.NS
-- symbol: MISHTANN
-  name: Mishtann Foods
-  yahooSymbol: MISHTANN.NS
+- symbol: HINDUNILVR
+  name: Hind. Unilever
+  yahooSymbol: HINDUNILVR.NS
+- symbol: LTIM
+  name: LTIMindtree
+  yahooSymbol: LTIM.NS
+- symbol: KIRLOSBROS
+  name: Kirl. Brothers
+  yahooSymbol: KIRLOSBROS.NS
+- symbol: HBLENGINE
+  name: HBL Engineering
+  yahooSymbol: HBLENGINE.NS
+- symbol: CHAMBLFERT
+  name: Chambal Fert.
+  yahooSymbol: CHAMBLFERT.NS
+- symbol: DODLA
+  name: Dodla Dairy
+  yahooSymbol: DODLA.NS
+- symbol: UNITDSPR
+  name: United Spirits
+  yahooSymbol: UNITDSPR.NS
+- symbol: VIKRAMSOL
+  name: Vikram Solar
+  yahooSymbol: VIKRAMSOL.NS
+- symbol: FINEORG
+  name: Fine Organic
+  yahooSymbol: FINEORG.NS
+- symbol: GODFRYPHLP
+  name: Godfrey Phillips
+  yahooSymbol: GODFRYPHLP.NS
+- symbol: CAPLIPOINT
+  name: Caplin Point Lab
+  yahooSymbol: CAPLIPOINT.NS
+- symbol: TATATECH
+  name: Tata Technolog.
+  yahooSymbol: TATATECH.NS
+- symbol: JBCHEPHARM
+  name: J B Chemicals &
+  yahooSymbol: JBCHEPHARM.NS
+- symbol: ASIANPAINT
+  name: Asian Paints
+  yahooSymbol: ASIANPAINT.NS
+- symbol: SHRIPISTON
+  name: Shriram Pistons
+  yahooSymbol: SHRIPISTON.NS
+- symbol: PETRONET
+  name: Petronet LNG
+  yahooSymbol: PETRONET.NS
+- symbol: HAVELLS
+  name: Havells India
+  yahooSymbol: HAVELLS.NS
+- symbol: SUMICHEM
+  name: Sumitomo Chemi.
+  yahooSymbol: SUMICHEM.NS
+- symbol: ENGINERSIN
+  name: Engineers India
+  yahooSymbol: ENGINERSIN.NS
+- symbol: ALIVUS
+  name: Alivus Life
+  yahooSymbol: ALIVUS.NS
+- symbol: BERGEPAINT
+  name: Berger Paints
+  yahooSymbol: BERGEPAINT.NS
+- symbol: GPPL
+  name: Guj Pipavav Port
+  yahooSymbol: GPPL.NS
+- symbol: ICICIGI
+  name: ICICI Lombard
+  yahooSymbol: ICICIGI.NS
+- symbol: BAYERCROP
+  name: Bayer Crop Sci.
+  yahooSymbol: BAYERCROP.NS
+- symbol: INDGN
+  name: Indegene
+  yahooSymbol: INDGN.NS
+- symbol: KSB
+  name: KSB
+  yahooSymbol: KSB.NS
+- symbol: GHCL
+  name: GHCL
+  yahooSymbol: GHCL.NS
+- symbol: AVANTIFEED
+  name: Avanti Feeds
+  yahooSymbol: AVANTIFEED.NS
+- symbol: HINDCOPPER
+  name: Hindustan Copper
+  yahooSymbol: HINDCOPPER.NS
+- symbol: UTIAMC
+  name: UTI AMC
+  yahooSymbol: UTIAMC.NS
+- symbol: CELLO
+  name: Cello World
+  yahooSymbol: CELLO.NS
+- symbol: CMSINFO
+  name: CMS Info Systems
+  yahooSymbol: CMSINFO.NS
+- symbol: NSDL
+  name: N S D L
+  yahooSymbol: NSDL.NS
+- symbol: MANINFRA
+  name: Man Infra
+  yahooSymbol: MANINFRA.NS
+- symbol: EIHOTEL
+  name: EIH
+  yahooSymbol: EIHOTEL.NS
+- symbol: GPIL
+  name: Godawari Power
+  yahooSymbol: GPIL.NS
+- symbol: COROMANDEL
+  name: Coromandel Inter
+  yahooSymbol: COROMANDEL.NS
+- symbol: VESUVIUS
+  name: Vesuvius India
+  yahooSymbol: VESUVIUS.NS
+- symbol: MGL
+  name: Mahanagar Gas
+  yahooSymbol: MGL.NS
+- symbol: PIIND
+  name: P I Industries
+  yahooSymbol: PIIND.NS
+- symbol: SUPPETRO
+  name: Supreme Petroch.
+  yahooSymbol: SUPPETRO.NS
+- symbol: CIPLA
+  name: Cipla
+  yahooSymbol: CIPLA.NS
+- symbol: MPHASIS
+  name: Mphasis
+  yahooSymbol: MPHASIS.NS
+- symbol: DRREDDY
+  name: Dr Reddy's Labs
+  yahooSymbol: DRREDDY.NS
+- symbol: APLAPOLLO
+  name: APL Apollo Tubes
+  yahooSymbol: APLAPOLLO.NS
+- symbol: SUPREMEIND
+  name: Supreme Inds.
+  yahooSymbol: SUPREMEIND.NS
+- symbol: HIMADRI
+  name: Himadri Special
+  yahooSymbol: HIMADRI.NS
+- symbol: RAILTEL
+  name: Railtel Corpn.
+  yahooSymbol: RAILTEL.NS
+- symbol: TIINDIA
+  name: Tube Investments
+  yahooSymbol: TIINDIA.NS
+- symbol: RITES
+  name: Rites
+  yahooSymbol: RITES.NS
+- symbol: MARUTI
+  name: Maruti Suzuki
+  yahooSymbol: MARUTI.NS
+- symbol: PFIZER
+  name: Pfizer
+  yahooSymbol: PFIZER.NS
+- symbol: RATNAMANI
+  name: Ratnamani Metals
+  yahooSymbol: RATNAMANI.NS
+- symbol: GRAVITA
+  name: Gravita India
+  yahooSymbol: GRAVITA.NS
+- symbol: INDIANHUME
+  name: Indian Metals
+  yahooSymbol: INDIANHUME.NS
+- symbol: KEI
+  name: KEI Industries
+  yahooSymbol: KEI.NS
+- symbol: ZENSARTECH
+  name: Zensar Tech.
+  yahooSymbol: ZENSARTECH.NS
+- symbol: WELCORP
+  name: Welspun Corp
+  yahooSymbol: WELCORP.NS
+- symbol: NESCO
+  name: NESCO
+  yahooSymbol: NESCO.NS
+- symbol: BOSCHLTD
+  name: Bosch
+  yahooSymbol: BOSCHLTD.NS
+- symbol: DBCORP
+  name: D B Corp
+  yahooSymbol: DBCORP.NS
+- symbol: BSOFT
+  name: Birlasoft Ltd
+  yahooSymbol: BSOFT.NS
+- symbol: TIMKEN
+  name: Timken India
+  yahooSymbol: TIMKEN.NS
+- symbol: GRINDWELL
+  name: Grindwell Norton
+  yahooSymbol: GRINDWELL.NS
+- symbol: AWL
+  name: AWL Agri Busine.
+  yahooSymbol: AWL.NS
+- symbol: IGL
+  name: Indraprastha Gas
+  yahooSymbol: IGL.NS
+- symbol: SURYAROSNI
+  name: Surya Roshni
+  yahooSymbol: SURYAROSNI.NS
+- symbol: VINATIORGA
+  name: Vinati Organics
+  yahooSymbol: VINATIORGA.NS
+- symbol: GARFIBRES
+  name: Garware Hi Tech
+  yahooSymbol: GARFIBRES.NS
+- symbol: TCI
+  name: Transport Corp.
+  yahooSymbol: TCI.NS
+- symbol: DIVISLAB
+  name: Divi's Lab.
+  yahooSymbol: DIVISLAB.NS
+- symbol: SUNTV
+  name: Sun TV Network
+  yahooSymbol: SUNTV.NS
+- symbol: ALKEM
+  name: Alkem Lab
+  yahooSymbol: ALKEM.NS
+- symbol: COCHINSHIP
+  name: Cochin Shipyard
+  yahooSymbol: COCHINSHIP.NS
+- symbol: COFORGE
+  name: Coforge
+  yahooSymbol: COFORGE.NS
+- symbol: DABUR
+  name: Dabur India
+  yahooSymbol: DABUR.NS
+- symbol: SUNPHARMA
+  name: Sun Pharma.Inds.
+  yahooSymbol: SUNPHARMA.NS
+- symbol: ZFCVINDIA
+  name: ZF Commercial
+  yahooSymbol: ZFCVINDIA.NS
+- symbol: KSCL
+  name: Kaveri Seed Co.
+  yahooSymbol: KSCL.NS
+- symbol: POLYMED
+  name: Poly Medicure
+  yahooSymbol: POLYMED.NS
+- symbol: MARKSANS
+  name: Marksans Pharma
+  yahooSymbol: MARKSANS.NS

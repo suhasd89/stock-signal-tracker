@@ -1,4 +1,7 @@
 package com.suhas.stocktracker.service;
+import com.suhas.stocktracker.model.WatchlistGroupSummary;
+import com.suhas.stocktracker.model.WatchlistStock;
+import com.suhas.stocktracker.model.StoredUser;
 import com.suhas.stocktracker.model.ScannerResult;
 import com.suhas.stocktracker.model.ScannerRun;
 import com.suhas.stocktracker.model.StrategyType;
@@ -24,6 +27,27 @@ public class DatabaseService {
     @PostConstruct
     void initialize() {
         ensureDataDirectory();
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS watchlist_stocks (
+                group_name TEXT NOT NULL,
+                symbol TEXT NOT NULL,
+                name TEXT NOT NULL,
+                yahoo_symbol TEXT NOT NULL,
+                sort_order INTEGER NOT NULL DEFAULT 0,
+                updated_at TEXT NOT NULL,
+                PRIMARY KEY (group_name, symbol)
+            )
+            """);
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS app_users (
+                username TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                role TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+            """);
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS strategy_scanner_runs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -216,6 +240,106 @@ public class DatabaseService {
             strategyType.slug()
         );
         return count != null && count > 0;
+    }
+
+    public boolean hasWatchlistStocks() {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM watchlist_stocks", Integer.class);
+        return count != null && count > 0;
+    }
+
+    public void replaceWatchlistGroup(String group, List<WatchlistStock> stocks) {
+        jdbcTemplate.update("DELETE FROM watchlist_stocks WHERE group_name = ?", group);
+        String updatedAt = OffsetDateTime.now().toString();
+        for (int index = 0; index < stocks.size(); index++) {
+            WatchlistStock stock = stocks.get(index);
+            jdbcTemplate.update("""
+                INSERT INTO watchlist_stocks (group_name, symbol, name, yahoo_symbol, sort_order, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                group,
+                stock.symbol(),
+                stock.name(),
+                stock.yahooSymbol(),
+                index,
+                updatedAt
+            );
+        }
+    }
+
+    public List<WatchlistStock> fetchWatchlistStocks() {
+        return jdbcTemplate.query("""
+            SELECT group_name, symbol, name, yahoo_symbol
+            FROM watchlist_stocks
+            ORDER BY group_name ASC, sort_order ASC, symbol ASC
+            """, (rs, rowNum) -> new WatchlistStock(
+            rs.getString("symbol"),
+            rs.getString("name"),
+            rs.getString("group_name"),
+            rs.getString("yahoo_symbol")
+        ));
+    }
+
+    public List<WatchlistGroupSummary> fetchWatchlistGroupSummaries() {
+        return jdbcTemplate.query("""
+            SELECT group_name, COUNT(*) AS stock_count
+            FROM watchlist_stocks
+            GROUP BY group_name
+            ORDER BY group_name ASC
+            """, (rs, rowNum) -> new WatchlistGroupSummary(
+            rs.getString("group_name"),
+            rs.getInt("stock_count")
+        ));
+    }
+
+    public StoredUser fetchUserByUsername(String username) {
+        List<StoredUser> users = jdbcTemplate.query("""
+            SELECT username, name, email, password_hash, role
+            FROM app_users
+            WHERE username = ?
+            LIMIT 1
+            """, (rs, rowNum) -> new StoredUser(
+            rs.getString("username"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("password_hash"),
+            rs.getString("role")
+        ), username);
+        return users.isEmpty() ? null : users.getFirst();
+    }
+
+    public StoredUser fetchUserByEmail(String email) {
+        List<StoredUser> users = jdbcTemplate.query("""
+            SELECT username, name, email, password_hash, role
+            FROM app_users
+            WHERE email = ?
+            LIMIT 1
+            """, (rs, rowNum) -> new StoredUser(
+            rs.getString("username"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("password_hash"),
+            rs.getString("role")
+        ), email);
+        return users.isEmpty() ? null : users.getFirst();
+    }
+
+    public void upsertUser(StoredUser user) {
+        jdbcTemplate.update("""
+            INSERT INTO app_users (username, name, email, password_hash, role, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(username) DO UPDATE SET
+                name = excluded.name,
+                email = excluded.email,
+                password_hash = excluded.password_hash,
+                role = excluded.role
+            """,
+            user.username(),
+            user.name(),
+            user.email(),
+            user.passwordHash(),
+            user.role(),
+            OffsetDateTime.now().toString()
+        );
     }
 
     private Double nullableDouble(ResultSet rs, String column) throws SQLException {
