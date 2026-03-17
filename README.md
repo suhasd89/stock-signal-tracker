@@ -57,6 +57,34 @@ The frontend defaults to port `5173` and calls `http://localhost:8080` unless yo
 VITE_API_BASE_URL=http://localhost:8080
 ```
 
+## Run with Docker
+
+You can also run the full app with Docker Compose from the project root:
+
+```bash
+cd /Users/suhasdeshmukh/Documents/New\ project
+docker compose up --build
+```
+
+Then open:
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8080/api/health`
+
+Useful Docker commands:
+
+```bash
+docker compose up --build -d
+docker compose logs -f
+docker compose down
+```
+
+Notes:
+
+- The frontend container serves the built React app through Nginx.
+- Nginx proxies `/api/*` requests to the backend container.
+- SQLite data is persisted in the Docker volume `backend-data`, so your scanner history remains even if the containers are recreated.
+
 ## Notes
 
 - The backend uses browser-style headers when calling Yahoo Finance to reduce rate-limit issues.

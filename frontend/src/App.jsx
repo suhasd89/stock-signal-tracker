@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080/api").replace(/\/$/, "");
 const STRATEGIES = [
   { key: "sma", label: "SMA" },
   { key: "v20", label: "V20" },
@@ -9,15 +9,26 @@ const LISTS = [
   { key: "ALL", label: "All Lists" },
   { key: "V40", label: "V40" },
   { key: "V40 NEXT", label: "V40 Next" },
-  { key: "V40NEXT", label: "V40 Next" },
   { key: "V200", label: "V200" },
   { key: "BANK", label: "Bank" },
   { key: "NBFC", label: "NBFC" },
 ];
 
+function normalizeGroup(group) {
+  return (group ?? "").replace(/\s+/g, "").toUpperCase();
+}
+
 function formatDate(value) {
   if (!value) return "-";
-  return new Date(value).toLocaleString();
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
 }
 
 function formatPrice(value) {
@@ -66,9 +77,17 @@ export default function App() {
   const [strategy, setStrategy] = useState("sma");
   const [activeList, setActiveList] = useState("ALL");
 
+  const fetchJson = async (url, options) => {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || `Request failed with status ${response.status}`);
+    }
+    return response.json();
+  };
+
   const loadDashboard = async (strategyKey = strategy) => {
-    const response = await fetch(`${API_BASE}/api/dashboard?strategy=${strategyKey}`);
-    const payload = await response.json();
+    const payload = await fetchJson(`${API_BASE}/dashboard?strategy=${strategyKey}`);
     setDashboard(payload);
     return payload;
   };
@@ -76,11 +95,7 @@ export default function App() {
   const runScan = async () => {
     setScanLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/api/scanner/run?strategy=${strategy}`, { method: "POST" });
-      if (!response.ok) {
-        const payload = await response.json();
-        throw new Error(payload.message || "Scanner failed");
-      }
+      await fetchJson(`${API_BASE}/scanner/run?strategy=${strategy}`, { method: "POST" });
       await loadDashboard();
     } finally {
       setScanLoading(false);
@@ -94,9 +109,8 @@ export default function App() {
 
     setBootstrapping(true);
     try {
-      await fetch(`${API_BASE}/api/scanner/run?strategy=${payload.strategy}`, { method: "POST" });
-      const response = await fetch(`${API_BASE}/api/dashboard?strategy=${payload.strategy}`);
-      const refreshed = await response.json();
+      await fetchJson(`${API_BASE}/scanner/run?strategy=${payload.strategy}`, { method: "POST" });
+      const refreshed = await fetchJson(`${API_BASE}/dashboard?strategy=${payload.strategy}`);
       setDashboard(refreshed);
     } finally {
       setBootstrapping(false);
@@ -110,7 +124,7 @@ export default function App() {
   }, [strategy]);
 
   useEffect(() => {
-    if (strategy === "sma" && (activeList === "V40 NEXT" || activeList === "V40NEXT" || activeList === "V200" || activeList === "BANK" || activeList === "NBFC")) {
+    if (strategy === "sma" && normalizeGroup(activeList) !== "V40" && activeList !== "ALL") {
       setActiveList("V40");
     }
   }, [strategy, activeList]);
@@ -120,7 +134,7 @@ export default function App() {
   }
 
   const filteredWatchlist = dashboard.watchlist.filter((row) => {
-    if (activeList !== "ALL" && row.group !== activeList) {
+    if (activeList !== "ALL" && normalizeGroup(row.group) !== normalizeGroup(activeList)) {
       return false;
     }
     const term = query.trim().toLowerCase();
@@ -135,7 +149,7 @@ export default function App() {
 
   const activeScannerAlerts = dashboard.watchlist.filter(
     (row) =>
-      (activeList === "ALL" || row.group === activeList) &&
+      (activeList === "ALL" || normalizeGroup(row.group) === normalizeGroup(activeList)) &&
       (row.scannerSignal === "BUY" || row.scannerSignal === "SELL" || row.scannerSignal === "ALERT")
   );
   const totalStrategyAlerts = dashboard.watchlist.filter(
@@ -149,10 +163,10 @@ export default function App() {
     if (strategy === "sma" && item.key !== "V40") {
       return false;
     }
-    if (item.key === "V200" && !dashboard.watchlist.some((row) => row.group === "V200")) {
+    if (item.key === "V200" && !dashboard.watchlist.some((row) => normalizeGroup(row.group) === "V200")) {
       return false;
     }
-    return dashboard.watchlist.some((row) => row.group === item.key);
+    return dashboard.watchlist.some((row) => normalizeGroup(row.group) === normalizeGroup(item.key));
   });
 
   const shareByEmail = () => {
@@ -176,12 +190,28 @@ export default function App() {
 
   return (
     <main className="shell">
+      <header className="topbar">
+        <div className="brand-lockup">
+          <span className="brand-mark">ST</span>
+          <div>
+            <p className="eyebrow topbar-eyebrow">Signal Tracker</p>
+            <strong>Indian Market Watchlists</strong>
+          </div>
+        </div>
+        <nav className="topbar-nav" aria-label="Section navigation">
+          <a href="#overview" className="nav-link">Overview</a>
+          <a href="#alerts" className="nav-link">Alerts</a>
+          <a href="#watchlist" className="nav-link">Watchlist</a>
+          <a href="#share" className="nav-link">Share</a>
+        </nav>
+      </header>
+
       <section className="hero hero-banner">
         <div className="hero-copy">
-          <p className="eyebrow">Spring Boot + React Dashboard</p>
+          <p className="eyebrow">Spring Boot + React</p>
           <h1>Indian Stock Signal Tracker</h1>
           <p className="subcopy">
-            Track V40, V40 Next, V200, Bank, and NBFC watchlists with fast list tabs, active alerts, and one-click chart access.
+            A calmer workspace for your `SMA` and `V20` strategies across V40, V40 Next, V200, Bank, and NBFC lists.
           </p>
         </div>
         <div className="hero-card hero-metrics">
@@ -214,22 +244,66 @@ export default function App() {
         </div>
       </section>
 
-      <section className="toolbar">
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          type="search"
-          placeholder={`Search ${strategy.toUpperCase()} stocks`}
-        />
-        <div className="toolbar-actions">
-          <button onClick={runScan} disabled={scanLoading}>
-            {scanLoading ? "Scanning..." : "Run Local Scan"}
-          </button>
-          <button onClick={() => loadDashboard()}>Refresh</button>
+      <section className="panel nav-panel" id="overview">
+        <div className="nav-grid">
+          <div className="nav-block">
+            <span className="nav-label">Strategy</span>
+            <div className="strategy-tabs strategy-switch strategy-row">
+              {STRATEGIES.map((item) => (
+                <button
+                  key={item.key}
+                  className={item.key === strategy ? "tab active" : "tab"}
+                  onClick={() => setStrategy(item.key)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="nav-block">
+            <span className="nav-label">Lists</span>
+            <div className="list-tabs compact-tabs">
+              {visibleLists.map((item) => {
+                const count = item.key === "ALL"
+                  ? dashboard.watchlist.length
+                  : dashboard.watchlist.filter((row) => normalizeGroup(row.group) === normalizeGroup(item.key)).length;
+                return (
+                  <button
+                    key={item.key}
+                    className={item.key === activeList ? "tab list-tab active" : "tab list-tab"}
+                    onClick={() => setActiveList(item.key)}
+                    type="button"
+                  >
+                    <span>{item.label}</span>
+                    <strong>{count}</strong>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="nav-block search-block">
+            <span className="nav-label">Search</span>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              type="search"
+              placeholder={`Search ${strategy.toUpperCase()} stocks`}
+            />
+          </div>
+          <div className="nav-block actions-block">
+            <span className="nav-label">Actions</span>
+            <div className="toolbar-actions">
+              <button onClick={runScan} disabled={scanLoading}>
+                {scanLoading ? "Scanning..." : "Run Local Scan"}
+              </button>
+              <button className="secondary-button" onClick={() => loadDashboard()}>Refresh</button>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="panel panel-accent">
+      <section className="panel panel-accent" id="share">
         <div className="panel-header">
           <h2>Share Alerts</h2>
           <p>Send the currently visible BUY and SELL signals through your own email app or WhatsApp.</p>
@@ -238,31 +312,6 @@ export default function App() {
           <button type="button" onClick={shareByEmail}>Share by Email</button>
           <button type="button" onClick={shareOnWhatsApp}>Share on WhatsApp</button>
           <button type="button" onClick={copyAlerts}>Copy Alert Text</button>
-        </div>
-      </section>
-
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Company Lists</h2>
-          <p>Filter the strategy results by watchlist bucket.</p>
-        </div>
-        <div className="list-tabs">
-          {visibleLists.map((item) => {
-            const count = item.key === "ALL"
-              ? dashboard.watchlist.length
-              : dashboard.watchlist.filter((row) => row.group === item.key).length;
-            return (
-              <button
-                key={item.key}
-                className={item.key === activeList ? "tab list-tab active" : "tab list-tab"}
-                onClick={() => setActiveList(item.key)}
-                type="button"
-              >
-                <span>{item.label}</span>
-                <strong>{count}</strong>
-              </button>
-            );
-          })}
         </div>
       </section>
 
@@ -281,7 +330,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="alerts">
         <div className="panel-header">
           <h2>
             {strategy === "sma" ? "Active SMA Alerts" : "Active V20 Alerts"} ({activeScannerAlerts.length})
@@ -305,7 +354,7 @@ export default function App() {
             activeScannerAlerts.map((row) => (
               <article
                 className="alert-card clickable-card"
-                key={row.symbol}
+                key={`${row.group}-${row.symbol}`}
                 onClick={() => openTradingView(row)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -340,7 +389,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="watchlist">
         <div className="panel-header">
           <h2>{strategy === "sma" ? "SMA Watchlist" : "V20 Watchlist"}</h2>
           <p>
@@ -376,7 +425,7 @@ export default function App() {
             </thead>
             <tbody>
               {filteredWatchlist.map((row) => (
-                <tr key={row.symbol}>
+                <tr key={`${row.group}-${row.symbol}`}>
                   <td>
                     <div
                       className="stock-cell clickable-stock"
@@ -391,7 +440,7 @@ export default function App() {
                       tabIndex={0}
                     >
                       <strong>{row.symbol}</strong>
-                      <span>{row.name} · {row.group}</span>
+                      <span>{row.name} · {normalizeGroup(row.group) === "V40NEXT" ? "V40 NEXT" : row.group}</span>
                     </div>
                   </td>
                   {strategy === "sma" ? (
